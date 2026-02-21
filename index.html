@@ -3,71 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026</title>
+    <title>Nagoya Dark Trip</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        #map { height: 40vh; width: 100%; z-index: 10; }
-        .tab-active { border-bottom: 3px solid #3b82f6; font-weight: bold; color: #3b82f6; }
-        body { font-family: -apple-system, system-ui, sans-serif; }
+        #map { height: 40vh; width: 100%; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #000; color: #eee; }
+        /* 隱藏 Leaflet 浮水印以保持簡約 */
+        .leaflet-control-attribution { display: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <header class="bg-white border-b sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-sm">
+<body class="bg-black">
+    <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-lg">
         <div>
-            <h1 class="text-xl font-black italic tracking-tighter text-blue-600">NAGOYA 4D3N</h1>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest">Feb 23 - Feb 26, 2026</p>
+            <h1 class="text-xl font-black italic tracking-tighter text-blue-500">NAGOYA 2026</h1>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Feb 23 - Feb 26</p>
         </div>
         <div class="text-right">
-            <span class="text-xs font-bold bg-yellow-300 px-2 py-1 rounded">2/23 天皇誕生日</span>
+            <span class="text-xs font-bold bg-blue-600 text-white px-2 py-1 rounded">D1 落機 14:10</span>
         </div>
     </header>
 
     <div id="map"></div>
 
-    <nav class="bg-white border-b flex justify-around sticky top-[68px] z-[1001] shadow-sm">
+    <nav class="bg-zinc-900 border-b border-zinc-800 flex justify-around sticky top-[68px] z-[1001]">
         <button onclick="switchDay(1)" id="tab1" class="py-3 px-4 text-sm tab-active">D1</button>
-        <button onclick="switchDay(2)" id="tab2" class="py-3 px-4 text-sm text-gray-400">D2</button>
-        <button onclick="switchDay(3)" id="tab3" class="py-3 px-4 text-sm text-gray-400">D3</button>
-        <button onclick="switchDay(4)" id="tab4" class="py-3 px-4 text-sm text-gray-400">D4</button>
+        <button onclick="switchDay(2)" id="tab2" class="py-3 px-4 text-sm text-zinc-500">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="py-3 px-4 text-sm text-zinc-500">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="py-3 px-4 text-sm text-zinc-500">D4</button>
     </nav>
 
     <main id="itinerary" class="p-5 pb-24 space-y-4"></main>
 
     <script>
+        // --- 📍 景點數據中心 (你想加景點就在這裡加) ---
         const itineraryData = {
             1: [
-                { time: "14:10", name: "名古屋機場 (NGO)", desc: "預計 16:30 到市中心", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "14:10", name: "中部國際機場 (NGO)", desc: "預計 16:30 前往市中心", lat: 34.858, lng: 136.805, icon: "🛬" },
                 { time: "16:30", name: "Nana-chan 巨像", desc: "名鐵百貨標誌，必睇怪衫", lat: 35.168, lng: 136.884, icon: "👗" },
-                { time: "18:30", name: "Oasis 21", desc: "水之宇宙船，影電視塔", lat: 35.171, lng: 136.909, icon: "🛸" },
-                { time: "20:00", name: "味仙 (今池本店)", desc: "挑戰超激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" }
+                { time: "18:30", name: "Oasis 21", desc: "幻彩宇宙船，影電視塔", lat: 35.171, lng: 136.909, icon: "🛸" },
+                { time: "20:00", name: "味仙 (今池本店)", desc: "晚餐：挑戰激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" }
             ],
             2: [
-                { time: "10:00", name: "名古屋城", desc: "睇金鯱", lat: 35.184, lng: 136.901, icon: "🏯" },
-                { time: "13:00", name: "喫茶マウンテン", desc: "挑戰抹茶紅豆意粉", lat: 35.138, lng: 136.963, icon: "🍝" }
+                { time: "10:00", name: "名古屋城", desc: "睇金鯱、本丸御殿", lat: 35.184, lng: 136.901, icon: "🏯" },
+                { time: "13:00", name: "喫茶マウンテン", desc: "抹茶紅豆意粉 (小心遭難)", lat: 35.138, lng: 136.963, icon: "🍝" }
             ],
             3: [
                 { time: "10:00", name: "間々観音", desc: "乳房主題寺廟", lat: 35.292, lng: 136.924, icon: "🗼" },
-                { time: "14:00", name: "大須商店街", desc: "萬松寺、古著", lat: 35.159, lng: 136.903, icon: "🐲" }
+                { time: "14:00", name: "大須商店街", desc: "萬松寺、古著、奇怪小食", lat: 35.159, lng: 136.903, icon: "🐲" }
             ],
             4: [
-                { time: "10:00", name: "則武之森", desc: "網紅牆", lat: 35.179, lng: 136.881, icon: "📚" },
-                { time: "15:00", name: "前往機場", desc: "買手信回港", icon: "🛫" }
+                { time: "10:00", name: "則武之森", desc: "網紅書店牆", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "15:00", name: "中部國際機場", desc: "買手信回程", lat: 34.858, lng: 136.805, icon: "🛫" }
             ]
         };
 
+        // Initialize Map
         let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         let markers = [];
 
         function switchDay(day) {
+            // UI Toggle
             document.querySelectorAll('nav button').forEach(b => {
                 b.classList.remove('tab-active');
-                b.classList.add('text-gray-400');
+                b.classList.add('text-zinc-500');
             });
             document.getElementById('tab' + day).classList.add('tab-active');
-            document.getElementById('tab' + day).classList.remove('text-gray-400');
+            document.getElementById('tab' + day).classList.remove('text-zinc-500');
 
             const container = document.getElementById('itinerary');
             container.innerHTML = '';
@@ -75,27 +80,31 @@
             markers = [];
             const dayPoints = [];
 
+            // Render Items
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex gap-4 shadow-sm">
+                    <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
-                                <span class="text-[10px] font-bold text-blue-500">${item.time}</span>
-                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded">即時導航</a>` : ''}
+                                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">${item.time}</span>
+                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800">NAVIGATE</a>` : ''}
                             </div>
-                            <h3 class="font-bold text-sm">${item.name}</h3>
-                            <p class="text-gray-400 text-[11px]">${item.desc}</p>
+                            <h3 class="font-bold text-sm text-zinc-100">${item.name}</h3>
+                            <p class="text-zinc-500 text-[11px] leading-relaxed mt-1">${item.desc}</p>
                         </div>
-                    </div>`;
+                    </div>
+                `;
                 if (item.lat) {
-                    const m = L.marker([item.lat, item.lng]).addTo(map).bindPopup(item.name);
+                    const m = L.marker([item.lat, item.lng]).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
                 }
             });
+
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
         }
+
         switchDay(1);
     </script>
 </body>
