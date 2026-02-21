@@ -1,133 +1,102 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nagoya Trip 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { height: 40vh; width: 100%; z-index: 10; }
+        .tab-active { border-bottom: 3px solid #3b82f6; font-weight: bold; color: #3b82f6; }
+        body { font-family: -apple-system, system-ui, sans-serif; }
+    </style>
 </head>
-<body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="zh-Hant"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Nagoya Trip 2026&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#map { height: 40vh; width: 100%; z-index: 10; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.tab-active { border-bottom: 3px solid #000; font-weight: bold; color: #000; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.timeline-item::before { content: ""; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body class="bg-gray-50 text-gray-900"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;header class="bg-white border-b sticky top-0 z-[1001] p-4 flex justify-between items-center"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-xl font-black italic tracking-tighter text-blue-600"&gt;NAGOYA 4D3N&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="text-[10px] text-gray-400 uppercase tracking-widest"&gt;Feb 23 - Feb 26, 2026&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="text-right"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;span class="text-xs font-bold bg-yellow-300 px-2 py-1 rounded"&gt;公眾假期注意&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="map"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;nav class="bg-white border-b flex justify-around sticky top-[68px] z-[1001]"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="switchDay(1)" id="tab1" class="py-3 px-4 text-sm text-gray-400 tab-active"&gt;D1&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="switchDay(2)" id="tab2" class="py-3 px-4 text-sm text-gray-400"&gt;D2&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="switchDay(3)" id="tab3" class="py-3 px-4 text-sm text-gray-400"&gt;D3&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="switchDay(4)" id="tab4" class="py-3 px-4 text-sm text-gray-400"&gt;D4&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/nav&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;main id="itinerary" class="p-5 pb-24 space-y-6"&gt;&lt;/main&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const itineraryData = {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>1: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "14:10", name: "中部國際機場 (NGO)", desc: "落機、入境、攞行李", lat: 34.858, lng: 136.805, icon: "🛬" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "15:30", name: "μ-Sky 快線", desc: "前往名古屋站 (約28分鐘)", icon: "🚆" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "16:30", name: "Nana-chan 巨像", desc: "名鐵百貨門口，睇下今日著咩衫", lat: 35.168, lng: 136.884, icon: "👗" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "18:30", name: "Oasis 21 + 電視塔", desc: "幻彩水之宇宙船，夜晚攝影最靚", lat: 35.171, lng: 136.909, icon: "🛸" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "20:00", name: "味仙 今池本店", desc: "晚餐：挑戰激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>2: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "09:30", name: "名古屋城", desc: "睇金鯱、本丸御殿", lat: 35.184, lng: 136.901, icon: "🏯" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "12:30", name: "喫茶マウンテン", desc: "午餐：抹茶紅豆意粉 (奇葩美食之首)", lat: 35.138, lng: 136.963, icon: "🍝" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "15:00", name: "熱田神宮", desc: "日本三大神器「草薙劍」存放地", lat: 35.125, lng: 136.909, icon: "⛩️" }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>3: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "10:00", name: "間々観音", desc: "乳房主題寺廟 (名古屋奇觀)", lat: 35.292, lng: 136.924, icon: "🗼" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "14:00", name: "大須商店街", desc: "萬松寺噴火龍、古著、奇怪小食", lat: 35.159, lng: 136.903, icon: "🐲" }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>],</p>
-<p class="p1"><span class="Apple-converted-space">            </span>4: [</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "10:00", name: "則武之森", desc: "網紅打卡書店牆、文青工藝", lat: 35.179, lng: 136.881, icon: "📚" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "13:00", name: "山本屋總本家", desc: "午餐：超硬口感味噌煮烏冬", lat: 35.171, lng: 136.885, icon: "🥘" },</p>
-<p class="p1"><span class="Apple-converted-space">                </span>{ time: "15:00", name: "前往機場", desc: "最後衝刺買手信", icon: "🛫" }</p>
-<p class="p1"><span class="Apple-converted-space">            </span>]</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let markers = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function switchDay(day) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Update Tabs</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.querySelectorAll('nav button').forEach(b =&gt; b.classList.remove('tab-active'));</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('tab' + day).classList.add('tab-active');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Update List</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById('itinerary');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML = '';</p>
-<p class="p2"><span class="Apple-converted-space">            </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Clear Markers</p>
-<p class="p1"><span class="Apple-converted-space">            </span>markers.forEach(m =&gt; map.removeLayer(m));</p>
-<p class="p1"><span class="Apple-converted-space">            </span>markers = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>const dayPoints = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>itineraryData[day].forEach((item, index) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>const card = `</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="relative pl-8 timeline-item"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="absolute left-0 top-1 w-8 h-8 bg-white border-2 border-black rounded-full flex items-center justify-center z-10 text-sm"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>${item.icon}</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="flex justify-between items-start"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span class="text-xs font-bold text-blue-500 uppercase"&gt;${item.time}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                                </span>${item.lat ? `&lt;a href="https://www.google.com/maps/search/?api=1&amp;query=${item.lat},${item.lng}" class="text-[10px] bg-gray-100 px-2 py-1 rounded"&gt;Google Map 導航&lt;/a&gt;` : ''}</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h3 class="font-bold text-md mt-1"&gt;${item.name}&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-gray-500 text-xs mt-1"&gt;${item.desc}&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>container.innerHTML += card;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">                </span>if (item.lat) {</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>const m = L.marker([item.lat, item.lng]).addTo(map).bindPopup(item.name);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>markers.push(m);</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>dayPoints.push([item.lat, item.lng]);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>if(dayPoints.length &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>map.fitBounds(dayPoints, { padding: [50, 50] });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>switchDay(1); // Default to Day 1</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<body class="bg-gray-50 text-gray-900">
+    <header class="bg-white border-b sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-sm">
+        <div>
+            <h1 class="text-xl font-black italic tracking-tighter text-blue-600">NAGOYA 4D3N</h1>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">Feb 23 - Feb 26, 2026</p>
+        </div>
+        <div class="text-right">
+            <span class="text-xs font-bold bg-yellow-300 px-2 py-1 rounded">2/23 天皇誕生日</span>
+        </div>
+    </header>
+
+    <div id="map"></div>
+
+    <nav class="bg-white border-b flex justify-around sticky top-[68px] z-[1001] shadow-sm">
+        <button onclick="switchDay(1)" id="tab1" class="py-3 px-4 text-sm tab-active">D1</button>
+        <button onclick="switchDay(2)" id="tab2" class="py-3 px-4 text-sm text-gray-400">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="py-3 px-4 text-sm text-gray-400">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="py-3 px-4 text-sm text-gray-400">D4</button>
+    </nav>
+
+    <main id="itinerary" class="p-5 pb-24 space-y-4"></main>
+
+    <script>
+        const itineraryData = {
+            1: [
+                { time: "14:10", name: "名古屋機場 (NGO)", desc: "預計 16:30 到市中心", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "16:30", name: "Nana-chan 巨像", desc: "名鐵百貨標誌，必睇怪衫", lat: 35.168, lng: 136.884, icon: "👗" },
+                { time: "18:30", name: "Oasis 21", desc: "水之宇宙船，影電視塔", lat: 35.171, lng: 136.909, icon: "🛸" },
+                { time: "20:00", name: "味仙 (今池本店)", desc: "挑戰超激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" }
+            ],
+            2: [
+                { time: "10:00", name: "名古屋城", desc: "睇金鯱", lat: 35.184, lng: 136.901, icon: "🏯" },
+                { time: "13:00", name: "喫茶マウンテン", desc: "挑戰抹茶紅豆意粉", lat: 35.138, lng: 136.963, icon: "🍝" }
+            ],
+            3: [
+                { time: "10:00", name: "間々観音", desc: "乳房主題寺廟", lat: 35.292, lng: 136.924, icon: "🗼" },
+                { time: "14:00", name: "大須商店街", desc: "萬松寺、古著", lat: 35.159, lng: 136.903, icon: "🐲" }
+            ],
+            4: [
+                { time: "10:00", name: "則武之森", desc: "網紅牆", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "15:00", name: "前往機場", desc: "買手信回港", icon: "🛫" }
+            ]
+        };
+
+        let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+        let markers = [];
+
+        function switchDay(day) {
+            document.querySelectorAll('nav button').forEach(b => {
+                b.classList.remove('tab-active');
+                b.classList.add('text-gray-400');
+            });
+            document.getElementById('tab' + day).classList.add('tab-active');
+            document.getElementById('tab' + day).classList.remove('text-gray-400');
+
+            const container = document.getElementById('itinerary');
+            container.innerHTML = '';
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            const dayPoints = [];
+
+            itineraryData[day].forEach(item => {
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 flex gap-4 shadow-sm">
+                        <div class="text-2xl">${item.icon}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start">
+                                <span class="text-[10px] font-bold text-blue-500">${item.time}</span>
+                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded">即時導航</a>` : ''}
+                            </div>
+                            <h3 class="font-bold text-sm">${item.name}</h3>
+                            <p class="text-gray-400 text-[11px]">${item.desc}</p>
+                        </div>
+                    </div>`;
+                if (item.lat) {
+                    const m = L.marker([item.lat, item.lng]).addTo(map).bindPopup(item.name);
+                    markers.push(m);
+                    dayPoints.push([item.lat, item.lng]);
+                }
+            });
+            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
+        }
+        switchDay(1);
+    </script>
 </body>
 </html>
