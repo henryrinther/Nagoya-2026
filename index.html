@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Dark Trip</title>
+    <title>Nagoya Trip 2026 - Dark Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -11,18 +11,19 @@
         #map { height: 40vh; width: 100%; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: #000; color: #eee; }
-        /* 隱藏 Leaflet 浮水印以保持簡約 */
         .leaflet-control-attribution { display: none; }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-black">
+
     <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-lg">
         <div>
             <h1 class="text-xl font-black italic tracking-tighter text-blue-500">NAGOYA 2026</h1>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Feb 23 - Feb 26</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Hotel: BASE LAYER錦</p>
         </div>
         <div class="text-right">
-            <span class="text-xs font-bold bg-blue-600 text-white px-2 py-1 rounded">D1 落機 14:10</span>
+            <span class="text-xs font-bold bg-blue-600 text-white px-2 py-1 rounded">M3 Max Power</span>
         </div>
     </header>
 
@@ -38,35 +39,35 @@
     <main id="itinerary" class="p-5 pb-24 space-y-4"></main>
 
     <script>
-        // --- 📍 景點數據中心 (你想加景點就在這裡加) ---
         const itineraryData = {
             1: [
-                { time: "14:10", name: "中部國際機場 (NGO)", desc: "預計 16:30 前往市中心", lat: 34.858, lng: 136.805, icon: "🛬" },
-                { time: "16:30", name: "Nana-chan 巨像", desc: "名鐵百貨標誌，必睇怪衫", lat: 35.168, lng: 136.884, icon: "👗" },
-                { time: "18:30", name: "Oasis 21", desc: "幻彩宇宙船，影電視塔", lat: 35.171, lng: 136.909, icon: "🛸" },
+                { time: "14:10", name: "中部國際機場 (NGO)", desc: "落機、入境、攞行李", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "16:30", name: "BASE LAYER HOTEL 名古屋錦", desc: "酒店 Check-in (錦2丁目2-6-30)", lat: 35.1718, lng: 136.9010, icon: "🏨" },
+                { time: "18:30", name: "Oasis 21 + 電視塔", desc: "由酒店行去好近，影幻彩宇宙船", lat: 35.171, lng: 136.909, icon: "🛸" },
                 { time: "20:00", name: "味仙 (今池本店)", desc: "晚餐：挑戰激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" }
             ],
             2: [
-                { time: "10:00", name: "名古屋城", desc: "睇金鯱、本丸御殿", lat: 35.184, lng: 136.901, icon: "🏯" },
-                { time: "13:00", name: "喫茶マウンテン", desc: "抹茶紅豆意粉 (小心遭難)", lat: 35.138, lng: 136.963, icon: "🍝" }
+                { time: "10:00", name: "東山動植物園", desc: "必睇：Red Panda (小熊貓)！", lat: 35.157, lng: 136.979, icon: "🐼" },
+                { time: "14:00", name: "Tower Records (名古屋Parco)", desc: "睇CD/音樂周邊，喺榮區附近", lat: 35.164, lng: 136.908, icon: "💿" },
+                { time: "16:00", name: "名古屋城", desc: "金鯱打卡，本丸御殿", lat: 35.184, lng: 136.901, icon: "🏯" }
             ],
             3: [
-                { time: "10:00", name: "間々観音", desc: "乳房主題寺廟", lat: 35.292, lng: 136.924, icon: "🗼" },
-                { time: "14:00", name: "大須商店街", desc: "萬松寺、古著、奇怪小食", lat: 35.159, lng: 136.903, icon: "🐲" }
+                { time: "10:30", name: "大須商店街 (中古天國)", desc: "Super Potato (遊戲機) / Mandarake (動漫玩具)", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { time: "14:00", name: "喫茶マウンテン", desc: "挑戰抹茶紅豆意粉 (最怪美食)", lat: 35.138, lng: 136.963, icon: "🍝" },
+                { time: "16:30", name: "Workman Plus", desc: "睇高性價比機能服裝 (熱田店)", lat: 35.133, lng: 136.900, icon: "👕" }
             ],
             4: [
-                { time: "10:00", name: "則武之森", desc: "網紅書店牆", lat: 35.179, lng: 136.881, icon: "📚" },
-                { time: "15:00", name: "中部國際機場", desc: "買手信回程", lat: 34.858, lng: 136.805, icon: "🛫" }
+                { time: "10:00", name: "則武之森 (Noritake)", desc: "網紅打卡書店牆", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "13:00", name: "最後手信 / 名古屋站", desc: "最後衝刺買嘢", lat: 35.170, lng: 136.882, icon: "🛍️" },
+                { time: "15:00", name: "前往機場", desc: "搭 μ-Sky 回程", icon: "🛫" }
             ]
         };
 
-        // Initialize Map
         let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         let markers = [];
 
         function switchDay(day) {
-            // UI Toggle
             document.querySelectorAll('nav button').forEach(b => {
                 b.classList.remove('tab-active');
                 b.classList.add('text-zinc-500');
@@ -80,31 +81,27 @@
             markers = [];
             const dayPoints = [];
 
-            // Render Items
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
                     <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
-                                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">${item.time}</span>
-                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800">NAVIGATE</a>` : ''}
+                                <span class="text-[10px] font-bold text-blue-400 uppercase">${item.time}</span>
+                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800">NAVIGATE</a>` : ''}
                             </div>
                             <h3 class="font-bold text-sm text-zinc-100">${item.name}</h3>
-                            <p class="text-zinc-500 text-[11px] leading-relaxed mt-1">${item.desc}</p>
+                            <p class="text-zinc-500 text-[11px] mt-1">${item.desc}</p>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 if (item.lat) {
                     const m = L.marker([item.lat, item.lng]).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
                 }
             });
-
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
         }
-
         switchDay(1);
     </script>
 </body>
