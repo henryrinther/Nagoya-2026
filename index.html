@@ -3,76 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Poster Edition</title>
+    <title>Nagoya Trip 2026 - Slate & Gold</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: #0b1527; color: #eee; overflow-x: hidden; }
+        /* 深灰色底色 (#18181b) */
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #09090b; color: #eee; overflow-x: hidden; }
         
-        /* MapToPoster 藝術風格核心 CSS */
-        #map-container { position: relative; height: 50vh; width: 100%; background: #0b1527; overflow: hidden; }
-        #map { height: 100%; width: 100%; background: #0b1527; }
+        #map-container { position: relative; height: 45vh; width: 100%; background: #18181b; }
+        #map { height: 100%; width: 100%; background: #18181b; }
 
-        /* 濾鏡：將地圖轉為「白線黑底」，再透過混合模式轉為金色 */
+        /* 金色路網濾鏡：針對深灰色底優化 */
         .leaflet-tile-container {
-            filter: grayscale(1) invert(1) brightness(1.2) contrast(1.1);
-            mix-blend-mode: screen; /* 讓白線浮在海軍藍背景上 */
+            filter: brightness(1.3) contrast(1.1) grayscale(1) sepia(1) saturate(5) hue-rotate(-10deg) opacity(0.8);
         }
 
-        /* 金色覆蓋層：讓白色道路變為金色 (#c9a86a) */
-        #map::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #c9a86a; mix-blend-mode: multiply; 
-            pointer-events: none; z-index: 500;
-        }
-
-        /* 海報風格標題 */
-        .poster-footer {
-            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-            text-align: center; z-index: 1001; pointer-events: none;
-            letter-spacing: 0.3em; text-transform: uppercase;
-        }
-
-        /* 金色發光 Marker */
+        /* 帶有 Emoji 嘅發光 Marker */
         .marker-pin {
-            width: 12px; height: 12px; background: #c9a86a; border: 2px solid #0b1527;
-            border-radius: 50%; box-shadow: 0 0 15px #c9a86a;
+            width: 40px; height: 40px;
+            background: rgba(24, 24, 27, 0.9);
+            border: 2px solid #c9a86a;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 15px rgba(201, 168, 106, 0.4);
         }
 
-        .tab-active { border-bottom: 3px solid #c9a86a; color: #c9a86a; font-weight: bold; }
+        .tab-active { border-bottom: 2px solid #c9a86a; color: #c9a86a; font-weight: bold; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .leaflet-control-attribution { display: none; }
     </style>
 </head>
-<body class="bg-[#0b1527]">
+<body class="bg-[#09090b]">
 
-    <header class="bg-[#0b1527] border-b border-zinc-800 p-6 flex justify-between items-end">
+    <header class="bg-zinc-950 p-6 flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-light tracking-[0.5em] text-[#c9a86a]">NAGOYA</h1>
-            <p class="text-[9px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March Edition / Japan</p>
+            <h1 class="text-xl font-light tracking-[0.4em] text-[#c9a86a]">N A G O Y A</h1>
+            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March Edition / M3 Max Power</p>
         </div>
         <div class="text-right">
-            <span class="text-[10px] text-zinc-400 border border-zinc-700 px-3 py-1 rounded-full">DESIGNER SERIES</span>
+            <span class="text-[9px] text-zinc-600 border border-zinc-800 px-3 py-1 rounded-md uppercase">Slate Grey v2.1</span>
         </div>
     </header>
 
     <div id="map-container">
         <div id="map"></div>
-        <div class="poster-footer">
-            <div class="text-[#c9a86a] text-lg font-light">名古屋</div>
-            <div class="text-zinc-500 text-[8px] mt-1">35.1815° N / 136.9066° E</div>
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-center z-[1001] pointer-events-none">
+            <div class="text-[#c9a86a] text-md font-light tracking-[0.4em]">名古屋</div>
+            <div class="text-zinc-600 text-[7px] mt-1 tracking-widest font-mono">35.1815° N / 136.9066° E</div>
         </div>
     </div>
 
-    <nav class="bg-[#0b1527] border-b border-zinc-800 flex justify-around sticky top-0 z-[1002]">
-        <button onclick="switchDay(1)" id="tab1" class="py-4 px-6 text-xs tab-active">D1</button>
-        <button onclick="switchDay(2)" id="tab2" class="py-4 px-6 text-xs text-zinc-500">D2</button>
-        <button onclick="switchDay(3)" id="tab3" class="py-4 px-6 text-xs text-zinc-500">D3</button>
-        <button onclick="switchDay(4)" id="tab4" class="py-4 px-6 text-xs text-zinc-500">D4</button>
+    <nav class="bg-zinc-950 border-b border-zinc-900 flex justify-around sticky top-0 z-[1002]">
+        <button onclick="switchDay(1)" id="tab1" class="py-4 px-6 text-[10px] tracking-widest tab-active">D1</button>
+        <button onclick="switchDay(2)" id="tab2" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D4</button>
     </nav>
 
-    <main id="itinerary" class="p-6 space-y-6"></main>
+    <main id="itinerary" class="p-6 space-y-8"></main>
+
+    <div class="px-6 mb-24">
+        <h2 class="text-[9px] font-bold tracking-[0.2em] text-zinc-600 uppercase mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-[#c9a86a] rounded-full"></span> Odd Food Quest
+        </h2>
+        <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+            <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-xl">
+                <h4 class="text-xs font-bold text-zinc-200">抹茶紅豆意粉 🍵</h4>
+                <p class="text-[10px] text-zinc-600 mt-2 leading-relaxed italic">喫茶 Mountain 限定任務</p>
+            </div>
+            <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-xl">
+                <h4 class="text-xs font-bold text-zinc-200">雪糕壽司卷 🍦</h4>
+                <p class="text-[10px] text-zinc-600 mt-2 leading-relaxed italic">丸八壽司。甜鹹感官衝突</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         const itineraryData = {
@@ -97,7 +103,6 @@
 
         let map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([35.17, 136.90], 13);
         
-        // 使用 CartoDB 無標籤版底圖，方便透過 CSS 染色
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
             subdomains: 'abcd',
             maxZoom: 20
@@ -108,10 +113,10 @@
         function switchDay(day) {
             document.querySelectorAll('nav button').forEach(b => {
                 b.classList.remove('tab-active');
-                b.classList.add('text-zinc-500');
+                b.classList.add('text-zinc-600');
             });
             document.getElementById('tab' + day).classList.add('tab-active');
-            document.getElementById('tab' + day).classList.remove('text-zinc-500');
+            document.getElementById('tab' + day).classList.remove('text-zinc-600');
 
             const container = document.getElementById('itinerary');
             container.innerHTML = '';
@@ -121,30 +126,30 @@
 
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
-                    <div class="flex gap-6 border-l border-zinc-800 ml-2 pl-6 pb-6 relative">
-                        <div class="absolute -left-[6.5px] top-0 w-3 h-3 bg-[#c9a86a] rounded-full shadow-[0_0_10px_#c9a86a]"></div>
+                    <div class="flex gap-8 border-l border-zinc-900 ml-1 pl-8 pb-8 relative last:pb-0">
+                        <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 bg-[#c9a86a] rounded-full shadow-[0_0_8px_#c9a86a]"></div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-baseline">
-                                <h3 class="font-bold text-sm text-zinc-100 tracking-wider">${item.name}</h3>
-                                <span class="text-[9px] font-mono text-zinc-500">${item.time}</span>
+                                <h3 class="font-bold text-xs text-zinc-200 tracking-[0.1em] uppercase">${item.name}</h3>
+                                <span class="text-[8px] font-mono text-zinc-700">${item.time}</span>
                             </div>
-                            <p class="text-zinc-500 text-[11px] mt-2 font-light">${item.desc}</p>
+                            <p class="text-zinc-600 text-[10px] mt-2 font-light leading-relaxed">${item.desc}</p>
                         </div>
                     </div>`;
 
                 if (item.lat) {
                     const customIcon = L.divIcon({
-                        html: `<div class="marker-pin"></div>`,
+                        html: `<div class="marker-pin">${item.icon}</div>`,
                         className: 'custom-div-icon',
-                        iconSize: [12, 12],
-                        iconAnchor: [6, 6]
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
                     });
                     const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
                 }
             });
-            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [80, 80] });
+            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [100, 100] });
         }
         switchDay(1);
     </script>
