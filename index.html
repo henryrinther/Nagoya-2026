@@ -3,99 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Cyan Frost</title>
+    <title>Nagoya Trip 2026 - Stable Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        /* 冷色系配色方案：深灰 (#09090b) + 電光青 (#90ee90) */
         body { font-family: -apple-system, system-ui, sans-serif; background-color: #09090b; color: #eee; overflow-x: hidden; scroll-behavior: smooth; }
         
-        #map-container { position: relative; height: 45vh; width: 100%; background: #09090b; }
-        #map { height: 100%; width: 100%; background: #09090b; }
+        #map-container { position: relative; height: 40vh; width: 100%; border-bottom: 1px solid #27272a; }
+        #map { height: 100%; width: 100%; background: #242424; }
 
-        /* 冷色系路網濾鏡：將灰色底圖轉為電光青線條 */
-        .leaflet-tile-container {
-            filter: brightness(1.2) contrast(1.2) grayscale(1) invert(1) sepia(1) saturate(5) hue-rotate(140deg) opacity(0.7);
-        }
+        /* 移除所有地圖 Filter，確保手機兼容性 */
+        .leaflet-tile-container { filter: none !important; }
 
-        /* Marker 樣式：改為青色發光 */
+        /* Marker 樣式：白底青邊 Emoji Pin */
         .marker-pin {
             width: 42px; height: 42px;
-            background: rgba(9, 9, 11, 0.9);
-            border: 2px solid #90ee90;
+            background: white;
+            border: 3px solid #90ee90;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 20px;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        .marker-pin:hover { transform: scale(1.1); }
 
         /* 清單選中高亮效果 */
-        .highlight-item { border-color: #90ee90 !important; background: rgba(0, 242, 255, 0.05) !important; box-shadow: 0 0 20px rgba(0, 242, 255, 0.1); }
+        .highlight-item { 
+            border-color: #90ee90 !important; 
+            background: rgba(144, 238, 144, 0.1) !important; 
+            box-shadow: 0 0 20px rgba(144, 238, 144, 0.2);
+            transform: scale(1.02);
+        }
 
-        .tab-active { border-bottom: 2px solid #90ee90; color: #90ee90; font-weight: bold; }
+        .tab-active { border-bottom: 3px solid #90ee90; color: #90ee90; font-weight: bold; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .leaflet-control-attribution { display: none; }
     </style>
 </head>
 <body class="bg-[#09090b]">
 
-    <header class="bg-zinc-950 p-6 flex justify-between items-center border-b border-zinc-900">
+    <header class="bg-zinc-950 p-6 flex justify-between items-center border-b border-zinc-900 sticky top-0 z-[2000] backdrop-blur-md">
         <div>
             <h1 class="text-xl font-light tracking-[0.4em] text-[#90ee90]">N A G O Y A</h1>
-            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March Edition / M3 Max Power</p>
+            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March Edition / M3 Max Powered</p>
         </div>
         <div class="text-right">
-            <span class="text-[9px] text-[#90ee90] border border-[#90ee90]/30 px-3 py-1 rounded-md uppercase tracking-widest font-bold">Cyan Edition v3.0</span>
+            <span class="text-[9px] text-[#90ee90] border border-[#90ee90]/30 px-3 py-1 rounded-md uppercase tracking-widest font-bold font-mono">STABLE v4.0</span>
         </div>
     </header>
 
     <div id="map-container">
         <div id="map"></div>
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-center z-[1001] pointer-events-none">
-            <div class="text-[#90ee90] text-md font-light tracking-[0.4em] opacity-80">名古屋</div>
-            <div class="text-zinc-600 text-[7px] mt-1 tracking-widest font-mono">35.1815° N / 136.9066° E</div>
-        </div>
     </div>
 
-    <nav class="bg-zinc-950 border-b border-zinc-900 flex justify-around sticky top-0 z-[1002] backdrop-blur-md">
+    <nav class="bg-zinc-950 border-b border-zinc-900 flex justify-around sticky top-[77px] z-[2000]">
         <button onclick="switchDay(1)" id="tab1" class="py-4 px-6 text-[10px] tracking-widest tab-active">D1</button>
         <button onclick="switchDay(2)" id="tab2" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D2</button>
         <button onclick="switchDay(3)" id="tab3" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D3</button>
         <button onclick="switchDay(4)" id="tab4" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D4</button>
     </nav>
 
-    <main id="itinerary" class="p-6 space-y-4"></main>
+    <main id="itinerary" class="p-6 space-y-4 pb-24"></main>
 
     <script>
         const itineraryData = {
             1: [
-                { id: "d1-1", time: "14:10", name: "中部國際機場 (NGO)", desc: "落機入境及提取行李", hours: "24 Hours", lat: 34.858, lng: 136.805, icon: "🛬" },
-                { id: "d1-2", time: "16:30", name: "酒店 Check-in", desc: "BASE LAYER 名古屋錦", hours: "Check-in 15:00+", lat: 35.1718, lng: 136.9010, icon: "🏨" },
-                { id: "d1-3", time: "20:00", name: "味仙 今池本店", desc: "挑戰元祖台灣拉麵", hours: "17:30 – 02:00", lat: 35.169, lng: 136.937, icon: "🍜" }
+                { id: "loc-1-1", time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋之旅起點", hours: "24 Hours", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { id: "loc-1-2", time: "16:30", name: "酒店 Check-in", desc: "BASE LAYER 名古屋錦", hours: "Check-in 15:00+", lat: 35.1718, lng: 136.9010, icon: "🏨" },
+                { id: "loc-1-3", time: "20:00", name: "味仙 今池本店", desc: "必試激辣台灣拉麵", hours: "17:30 – 02:00", lat: 35.169, lng: 136.937, icon: "🍜" }
             ],
             2: [
-                { id: "d2-1", time: "10:00", name: "東山動植物園", desc: "觀賞紅熊貓及熱門物種", hours: "09:00 – 16:30", lat: 35.157, lng: 136.979, icon: "🐼" },
-                { id: "d2-2", time: "16:00", name: "名古屋城", desc: "歷史地標巡禮", hours: "09:00 – 16:30", lat: 35.184, lng: 136.901, icon: "🏯" }
+                { id: "loc-2-1", time: "10:00", name: "東山動植物園", desc: "尋找小熊貓任務", hours: "09:00 – 16:30", lat: 35.157, lng: 136.979, icon: "🐼" },
+                { id: "loc-2-2", time: "16:00", name: "名古屋城", desc: "歷史地標巡禮", hours: "09:00 – 16:30", lat: 35.184, lng: 136.901, icon: "🏯" }
             ],
             3: [
-                { id: "d3-1", time: "10:30", name: "大須商店街", desc: "電玩及中古玩具聖地", hours: "10:00 – 20:00", lat: 35.159, lng: 136.903, icon: "🎮" },
-                { id: "d3-2", time: "14:00", name: "喫茶 Mountain", desc: "挑戰抹茶紅豆意粉", hours: "09:00 – 21:30", lat: 35.138, lng: 136.963, icon: "🍵" }
+                { id: "loc-3-1", time: "10:30", name: "大須商店街", desc: "中古遊戲與動漫聖地", hours: "10:00 – 20:00", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { id: "loc-3-2", time: "14:00", name: "喫茶 Mountain", desc: "終極怪食挑戰", hours: "09:00 – 21:30", lat: 35.138, lng: 136.963, icon: "🍵" }
             ],
             4: [
-                { id: "d4-1", time: "10:00", name: "則武之森", desc: "蔦屋書店及自然步道", hours: "10:00 – 18:00", lat: 35.179, lng: 136.881, icon: "📚" },
-                { id: "d4-2", time: "15:00", name: "前往機場", desc: "搭乘 μ-Sky 返回", hours: "N/A", icon: "🛫" }
+                { id: "loc-4-1", time: "10:00", name: "則武之森", desc: "網紅書店牆拍照", hours: "10:00 – 18:00", lat: 35.179, lng: 136.881, icon: "📚" },
+                { id: "loc-4-2", time: "15:00", name: "前往機場", desc: "搭乘 μ-Sky 返港", hours: "N/A", icon: "🛫" }
             ]
         };
 
+        // 初始化地圖，唔加任何 filter
         let map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([35.17, 136.90], 13);
         
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-            subdomains: 'abcd',
-            maxZoom: 20
+        // 使用最原始、最穩定嘅 OSM 圖磚
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
         }).addTo(map);
 
         let markers = [];
@@ -115,10 +112,9 @@
             const dayPoints = [];
 
             itineraryData[day].forEach(item => {
-                // 生成清單 HTML，圓點替換為 Emoji
                 container.innerHTML += `
-                    <div id="${item.id}" class="item-card transition-all duration-300 flex gap-6 border border-zinc-900 bg-zinc-950/50 p-5 rounded-2xl relative">
-                        <div class="text-2xl pt-1">${item.icon}</div>
+                    <div id="${item.id}" class="item-card transition-all duration-300 flex gap-6 border border-zinc-900 bg-zinc-950/50 p-5 rounded-2xl relative active:scale-95">
+                        <div class="text-3xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
                                 <h3 class="font-bold text-sm text-zinc-100 tracking-wider uppercase">${item.name}</h3>
@@ -126,7 +122,7 @@
                             </div>
                             <p class="text-zinc-500 text-[10px] mt-1 font-light leading-relaxed">${item.desc}</p>
                             <div class="mt-3 flex items-center gap-2">
-                                <span class="text-[8px] px-2 py-0.5 rounded border border-zinc-800 text-zinc-400 font-mono uppercase">Hours: ${item.hours}</span>
+                                <span class="text-[8px] px-2 py-0.5 rounded border border-zinc-800 text-zinc-500 font-mono">🕒 HOURS: ${item.hours}</span>
                             </div>
                         </div>
                     </div>`;
@@ -143,23 +139,20 @@
                     dayPoints.push([item.lat, item.lng]);
                 }
             });
-            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [80, 80] });
+            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [60, 60] });
         }
 
-        // 新增功能：點擊 Emoji 導航到清單
+        // 功能：撳地圖 Emoji 捲動去清單
         function scrollToItem(id) {
-            // 移除所有高亮
             document.querySelectorAll('.item-card').forEach(card => card.classList.remove('highlight-item'));
-            
             const target = document.getElementById(id);
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                target.classList.add('highlight-item');
+                const yOffset = -180; 
+                const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
                 
-                // 3秒後自動消失高亮
-                setTimeout(() => {
-                    target.classList.remove('highlight-item');
-                }, 3000);
+                target.classList.add('highlight-item');
+                setTimeout(() => target.classList.remove('highlight-item'), 3000);
             }
         }
 
