@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Tactical Edition</title>
+    <title>Nagoya Trip 2026 - Smooth Dark</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #050505; color: #eee; overflow-x: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #000; color: #eee; overflow-x: hidden; }
         
-        /* 戰術衛星地圖濾鏡 */
+        /* Stadia Maps 專用設置 - 移除 Filter 保持原生暗色 */
         #map { 
             height: 45vh; 
             width: 100%; 
-            background: #050505;
-            filter: brightness(0.6) contrast(1.2) saturate(0.2) hue-rotate(180deg) invert(100%);
+            background: #242424;
             border-bottom: 1px solid #27272a;
         }
 
@@ -25,15 +24,14 @@
         .marker-pin {
             width: 38px;
             height: 38px;
-            background: rgba(9, 9, 11, 0.9);
+            background: rgba(15, 15, 18, 0.9);
             border: 2px solid #3b82f6;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
 
         /* 隱藏捲軸 */
@@ -51,7 +49,7 @@
             <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Base: BASE LAYER 錦</p>
         </div>
         <div class="text-right">
-            <span class="text-[9px] font-bold bg-zinc-800 text-blue-400 px-2 py-1 rounded border border-blue-900/50 tracking-tighter">TACTICAL NAV v3.0</span>
+            <span class="text-[9px] font-bold bg-zinc-800 text-blue-400 px-2 py-1 rounded border border-blue-900/50 tracking-tighter">ALIDADE SMOOTH DARK</span>
         </div>
     </header>
 
@@ -75,17 +73,17 @@
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-red-500 font-bold mb-1 tracking-widest">LEVEL: DEADLY</div>
                 <h4 class="text-sm font-bold text-zinc-100">抹茶紅豆意粉 🍵</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">喫茶 Mountain 名物。熱鮮奶油配上抹茶與意粉，勇者限定。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">喫茶 Mountain。名古屋最出名的「遇難」聖地。</p>
             </div>
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-orange-500 font-bold mb-1 tracking-widest">LEVEL: WEIRD</div>
                 <h4 class="text-sm font-bold text-zinc-100">雪糕壽司卷 🍦</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">丸八壽司。將雲呢拿雪糕捲入醋飯，冷熱甜鹹衝擊。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">丸八壽司。衝擊感官的冷熱甜鹹組合。</p>
             </div>
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-yellow-500 font-bold mb-1 tracking-widest">LEVEL: SALTY</div>
                 <h4 class="text-sm font-bold text-zinc-100">守口漬 🥢</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">世界最長醃蘿蔔。長達 1.8 米，酒粕味極濃，挑戰味蕾。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">世界最長醃蘿蔔。1.8米酒粕醃製極限。</p>
             </div>
         </div>
     </div>
@@ -93,34 +91,36 @@
     <script>
         const itineraryData = {
             1: [
-                { time: "14:10", name: "中部國際機場 (NGO)", desc: "攞行李、搭名鐵", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋門戶", lat: 34.858, lng: 136.805, icon: "🛬" },
                 { time: "16:30", name: "酒店 Check-in", desc: "BASE LAYER 名古屋錦", lat: 35.1718, lng: 136.9010, icon: "🏨" },
                 { time: "18:30", name: "Oasis 21", desc: "宇宙船打卡 + 電視塔夜景", lat: 35.171, lng: 136.909, icon: "🛸" },
                 { time: "20:00", name: "味仙 今池本店", desc: "激辣台灣拉麵挑戰", lat: 35.169, lng: 136.937, icon: "🍜" },
-                { time: "22:00", name: "丸八壽司", desc: "怪食：雪糕壽司宵夜", lat: 35.171, lng: 136.887, icon: "🍣" }
+                { time: "22:00", name: "丸八壽司", desc: "怪食挑戰：雪糕壽司卷", lat: 35.171, lng: 136.887, icon: "🍣" }
             ],
             2: [
-                { time: "10:00", name: "東山動植物園", desc: "Red Panda 觀賞任務", lat: 35.157, lng: 136.979, icon: "🐼" },
-                { time: "14:00", name: "Tower Records", desc: "音樂周邊巡禮", lat: 35.164, lng: 136.908, icon: "💿" },
-                { time: "16:00", name: "名古屋城", desc: "金鯱城郭巡禮", lat: 35.184, lng: 136.901, icon: "🏯" }
+                { time: "10:00", name: "東山動植物園", desc: "尋找小熊貓任務", lat: 35.157, lng: 136.979, icon: "🐼" },
+                { time: "14:00", name: "Tower Records", desc: "Parco 榮區巡禮", lat: 35.164, lng: 136.908, icon: "💿" },
+                { time: "16:00", name: "名古屋城", desc: "金鯱城郭打卡", lat: 35.184, lng: 136.901, icon: "🏯" }
             ],
             3: [
-                { time: "10:30", name: "大須商店街", desc: "中古遊戲與動漫天國", lat: 35.159, lng: 136.903, icon: "🎮" },
-                { time: "14:00", name: "喫茶 Mountain", desc: "究極怪食：抹茶紅豆意粉", lat: 35.138, lng: 136.963, icon: "🍵" },
-                { time: "16:30", name: "Workman Plus", desc: "熱田店：機能服飾掃貨", lat: 35.133, lng: 136.900, icon: "👕" }
+                { time: "10:30", name: "大須商店街", desc: "中古遊戲/動漫天國", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { time: "14:00", name: "喫茶 Mountain", desc: "抹茶紅豆意粉任務", lat: 35.138, lng: 136.963, icon: "🍵" },
+                { time: "16:30", name: "Workman Plus", desc: "熱田店：機能服飾採購", lat: 35.133, lng: 136.900, icon: "👕" }
             ],
             4: [
-                { time: "10:00", name: "則武之森", desc: "網紅書店牆拍照", lat: 35.179, lng: 136.881, icon: "📚" },
-                { time: "12:00", name: "勾芡意粉 Chao", desc: "最後名古屋名物體驗", lat: 35.170, lng: 136.883, icon: "🍝" },
-                { time: "15:00", name: "機場", desc: "μ-Sky 返程回港", icon: "🛫" }
+                { time: "10:00", name: "則武之森", desc: "蔦屋書店牆拍照", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "12:00", name: "勾芡意粉 Chao", desc: "名古屋重口味經典", lat: 35.170, lng: 136.883, icon: "🍝" },
+                { time: "15:00", name: "機場", desc: "μ-Sky 歸途", icon: "🛫" }
             ]
         };
 
+        // 初始化地圖
         let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
         
-        // 戰術衛星底圖 (Esri Imagery)
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 19
+        // Stadia Maps - Alidade Smooth Dark
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
+            attribution: ''
         }).addTo(map);
 
         let markers = [];
@@ -141,7 +141,7 @@
 
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4 backdrop-blur-sm">
+                    <div class="bg-zinc-900/60 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4 backdrop-blur-md">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
