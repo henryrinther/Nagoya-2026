@@ -3,38 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Designer Pro</title>
+    <title>Nagoya Trip 2026 - Vinyl Hunter Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body { font-family: -apple-system, system-ui, sans-serif; background-color: #09090b; color: #eee; overflow-x: hidden; scroll-behavior: smooth; }
-        
         #map-container { position: relative; height: 35vh; width: 100%; border-bottom: 1px solid #27272a; }
         #map { height: 100%; width: 100%; background: #242424; }
-
-        /* 保持地圖原始風格以確保手機穩定性 */
         .leaflet-tile-container { filter: none !important; }
-
-        /* Marker 樣式：白底青邊 Emoji Pin */
         .marker-pin {
             width: 42px; height: 42px;
-            background: white;
-            border: 3px solid #90ee90;
-            border-radius: 50%;
+            background: white; border: 3px solid #90ee90; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
+            font-size: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); cursor: pointer;
         }
-
-        /* 清單選中高亮效果 */
-        .highlight-item { 
-            border-color: #90ee90 !important; 
-            background: rgba(144, 238, 144, 0.1) !important; 
-            transform: scale(1.02);
-        }
-
+        .highlight-item { border-color: #90ee90 !important; background: rgba(144, 238, 144, 0.1) !important; transform: scale(1.02); }
         .tab-active { border-bottom: 3px solid #90ee90; color: #90ee90; font-weight: bold; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .leaflet-control-attribution { display: none; }
@@ -45,14 +29,13 @@
     <header class="bg-zinc-950 p-5 flex justify-between items-center border-b border-zinc-900 sticky top-0 z-[2000] backdrop-blur-md">
         <div>
             <h1 class="text-xl font-light tracking-[0.4em] text-[#90ee90]">N A G O Y A</h1>
-            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March Edition / M3 Max</p>
+            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March / M3 Max Powered</p>
         </div>
-        
         <div class="flex items-center gap-3 bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800">
             <div class="text-2xl">🌤️</div>
             <div class="text-right">
                 <div class="text-[10px] font-bold text-[#90ee90] leading-none">12°C</div>
-                <div class="text-[8px] text-zinc-500 uppercase tracking-tighter mt-1">Nagoya / Cloudy</div>
+                <div class="text-[8px] text-zinc-500 uppercase mt-1">Nagoya / Cloudy</div>
             </div>
         </div>
     </header>
@@ -71,60 +54,53 @@
     <main id="itinerary" class="p-6 space-y-4 pb-24"></main>
 
     <script>
-        const hotel = { id: "hotel-base", time: "START", name: "BASE LAYER 名古屋錦", desc: "今晚住宿地點", hours: "Check-in 15:00+", lat: 35.1718, lng: 136.9010, icon: "🏨" };
+        const hotel = { id: "hotel-base", time: "BASE", name: "BASE LAYER 名古屋錦", desc: "錦2丁目2-6-30", hours: "24h Stay", lat: 35.1718, lng: 136.9010, icon: "🏨" };
 
         const itineraryData = {
             1: [
                 { id: "loc-1-1", time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋之旅起點", hours: "24 Hours", lat: 34.858, lng: 136.805, icon: "🛬" },
                 hotel,
-                { id: "loc-1-3", time: "20:00", name: "味仙 今池本店", desc: "必試激辣台灣拉麵", hours: "17:30 – 02:00", lat: 35.169, lng: 136.937, icon: "🍜" }
+                { id: "loc-1-3", time: "19:00", name: "馬喰一代 名古屋榮", desc: "晚餐：頂級飛驒牛燒肉", hours: "11:30–23:00", lat: 35.1699, lng: 136.9082, icon: "🐂" }
             ],
             2: [
                 hotel,
-                { id: "loc-2-1", time: "10:00", name: "東山動植物園", desc: "尋找小熊貓任務", hours: "09:00 – 16:30", lat: 35.157, lng: 136.979, icon: "🐼" },
-                { id: "loc-2-2", time: "16:00", name: "名古屋城", desc: "歷史地標巡禮", hours: "09:00 – 16:30", lat: 35.184, lng: 136.901, icon: "🏯" }
+                { id: "loc-2-1", time: "10:00", name: "名古屋市科學館", desc: "必睇世界最大天象儀", hours: "09:30–17:00", lat: 35.1643, lng: 136.8998, icon: "🔭" },
+                { id: "loc-2-2", time: "12:30", name: "山本屋總本家", desc: "午餐：味噌煮烏冬名店", hours: "11:00–22:00", lat: 35.1661, lng: 136.9073, icon: "🥘" },
+                { id: "loc-2-3", time: "15:00", name: "Banana Record 榮店", desc: "榮區黑膠連鎖名店", hours: "11:00–20:00", lat: 35.1685, lng: 136.9063, icon: "💿" }
             ],
             3: [
                 hotel,
-                { id: "loc-3-1", time: "10:30", name: "大須商店街", desc: "中古遊戲與動漫聖地", hours: "10:00 – 20:00", lat: 35.159, lng: 136.903, icon: "🎮" },
-                { id: "loc-3-2", time: "14:00", name: "喫茶 Mountain", desc: "終極怪食挑戰", hours: "09:00 – 21:30", lat: 35.138, lng: 136.963, icon: "🍵" }
+                { id: "loc-3-1", time: "09:30", name: "熱田神宮", desc: "三大神器「草薙劍」收藏地", hours: "24 Hours", lat: 35.1257, lng: 136.9091, icon: "⛩️" },
+                { id: "loc-3-2", time: "14:00", name: "Banana Record 大須店", desc: "大須規模最大的中古黑膠店", hours: "11:00–20:00", lat: 35.1595, lng: 136.9015, icon: "📀" },
+                { id: "loc-3-3", time: "16:00", name: "大須商店街", desc: "中古遊戲與動漫聖地", hours: "10:00–20:00", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { id: "loc-3-4", time: "18:30", name: "塚ちゃん餃子", desc: "千種站人氣餃子", hours: "17:00–23:00", lat: 35.1706, lng: 136.9300, icon: "🥟" }
             ],
             4: [
                 hotel,
-                { id: "loc-4-1", time: "10:00", name: "則武之森", desc: "網紅書店牆拍照", hours: "10:00 – 18:00", lat: 35.179, lng: 136.881, icon: "📚" },
-                { id: "loc-4-2", time: "15:00", name: "前往機場", desc: "搭乘 μ-Sky 返港", hours: "N/A", icon: "🛫" }
+                { id: "loc-4-1", time: "11:00", name: "cafe MARU", desc: "那古野圓頓寺商店街網紅店", hours: "11:00–18:00", lat: 35.1765, lng: 136.8912, icon: "☕" },
+                { id: "loc-4-2", time: "13:00", name: "近江燒肉すだく", desc: "午餐：近江牛燒肉丼", hours: "12:00–23:00", lat: 35.1738, lng: 136.8915, icon: "🍚" },
+                { id: "loc-4-3", time: "15:00", name: "機場回程", desc: "前往機場搭機", hours: "N/A", icon: "🛫" }
             ]
         };
 
         let map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([35.17, 136.90], 13);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
-
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
         let markers = [];
 
         function switchDay(day) {
-            document.querySelectorAll('nav button').forEach(b => {
-                b.classList.remove('tab-active');
-                b.classList.add('text-zinc-600');
-            });
+            document.querySelectorAll('nav button').forEach(b => { b.classList.remove('tab-active'); b.classList.add('text-zinc-600'); });
             document.getElementById('tab' + day).classList.add('tab-active');
             document.getElementById('tab' + day).classList.remove('text-zinc-600');
-
             const container = document.getElementById('itinerary');
-            container.innerHTML = '';
-            markers.forEach(m => map.removeLayer(m));
-            markers = [];
+            container.innerHTML = ''; markers.forEach(m => map.removeLayer(m)); markers = [];
             const dayPoints = [];
-
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
                     <div id="${item.id}" class="item-card transition-all duration-300 flex gap-6 border border-zinc-900 bg-zinc-950/50 p-5 rounded-2xl relative active:scale-95">
                         <div class="text-3xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
-                                <h3 class="font-bold text-sm text-zinc-100 tracking-wider uppercase">${item.name}</h3>
+                                <h3 class="font-bold text-sm text-zinc-100 uppercase tracking-wider">${item.name}</h3>
                                 <span class="text-[9px] font-mono text-[#90ee90] font-bold">${item.time}</span>
                             </div>
                             <p class="text-zinc-500 text-[10px] mt-1 font-light leading-relaxed">${item.desc}</p>
@@ -133,17 +109,9 @@
                             </div>
                         </div>
                     </div>`;
-
                 if (item.lat) {
-                    const customIcon = L.divIcon({
-                        html: `<div class="marker-pin" onclick="scrollToItem('${item.id}')">${item.icon}</div>`,
-                        className: 'custom-div-icon',
-                        iconSize: [42, 42],
-                        iconAnchor: [21, 21]
-                    });
-                    const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map);
-                    markers.push(m);
-                    dayPoints.push([item.lat, item.lng]);
+                    const customIcon = L.divIcon({ html: `<div class="marker-pin" onclick="scrollToItem('${item.id}')">${item.icon}</div>`, className: 'custom-div-icon', iconSize: [42, 42], iconAnchor: [21, 21] });
+                    const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map); markers.push(m); dayPoints.push([item.lat, item.lng]);
                 }
             });
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [60, 60] });
@@ -153,15 +121,12 @@
             document.querySelectorAll('.item-card').forEach(card => card.classList.remove('highlight-item'));
             const target = document.getElementById(id);
             if (target) {
-                const yOffset = -180; 
-                const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                const y = target.getBoundingClientRect().top + window.pageYOffset - 180;
                 window.scrollTo({ top: y, behavior: 'smooth' });
-                
                 target.classList.add('highlight-item');
                 setTimeout(() => target.classList.remove('highlight-item'), 3000);
             }
         }
-
         switchDay(1);
     </script>
 </body>
