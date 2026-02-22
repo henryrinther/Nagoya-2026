@@ -3,112 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Dark Edition</title>
+    <title>Nagoya Trip 2026 - Tactical Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        #map { height: 40vh; width: 100%; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #050505; color: #eee; overflow-x: hidden; }
+        
+        /* 戰術衛星地圖濾鏡 */
+        #map { 
+            height: 45vh; 
+            width: 100%; 
+            background: #050505;
+            filter: brightness(0.6) contrast(1.2) saturate(0.2) hue-rotate(180deg) invert(100%);
+            border-bottom: 1px solid #27272a;
+        }
+
         .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
-        body { font-family: -apple-system, system-ui, sans-serif; background-color: #000; color: #eee; }
-        .leaflet-control-attribution { display: none; }
-        ::-webkit-scrollbar { display: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 自定義發光 Marker */
         .marker-pin {
             width: 38px;
             height: 38px;
-            background: rgba(24, 24, 27, 0.8);
+            background: rgba(9, 9, 11, 0.9);
             border: 2px solid #3b82f6;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-            }
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        /* 隱藏捲軸 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .leaflet-control-attribution { display: none; }
     </style>
 </head>
 <body class="bg-black">
 
-    <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-lg">
+    <header class="bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-2xl">
         <div>
             <h1 class="text-xl font-black italic tracking-tighter text-blue-500">NAGOYA 2026</h1>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Hotel: BASE LAYER錦</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Base: BASE LAYER 錦</p>
         </div>
         <div class="text-right">
-            <span class="text-xs font-bold bg-blue-600 text-white px-2 py-1 rounded">M3 Max Power</span>
+            <span class="text-[9px] font-bold bg-zinc-800 text-blue-400 px-2 py-1 rounded border border-blue-900/50 tracking-tighter">TACTICAL NAV v3.0</span>
         </div>
     </header>
 
     <div id="map"></div>
 
     <nav class="bg-zinc-900 border-b border-zinc-800 flex justify-around sticky top-[68px] z-[1001]">
-        <button onclick="switchDay(1)" id="tab1" class="py-3 px-4 text-sm tab-active">D1</button>
-        <button onclick="switchDay(2)" id="tab2" class="py-3 px-4 text-sm text-zinc-500">D2</button>
-        <button onclick="switchDay(3)" id="tab3" class="py-3 px-4 text-sm text-zinc-500">D3</button>
-        <button onclick="switchDay(4)" id="tab4" class="py-3 px-4 text-sm text-zinc-500">D4</button>
+        <button onclick="switchDay(1)" id="tab1" class="py-3 px-6 text-sm tab-active">D1</button>
+        <button onclick="switchDay(2)" id="tab2" class="py-3 px-6 text-sm text-zinc-500">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="py-3 px-6 text-sm text-zinc-500">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="py-3 px-6 text-sm text-zinc-500">D4</button>
     </nav>
 
-    <main id="itinerary" class="p-5 pb-24 space-y-4"></main>
+    <main id="itinerary" class="p-5 space-y-4"></main>
 
-    <div class="px-5 mb-10">
-        <h2 class="text-xs font-black italic tracking-widest text-zinc-500 uppercase mb-3 flex items-center gap-2">
+    <div class="px-5 mb-24">
+        <h2 class="text-xs font-black italic tracking-widest text-zinc-500 uppercase mb-4 flex items-center gap-2">
             <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
             Odd Food Quest / 怪食挑戰
         </h2>
         <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-            <div class="min-w-[200px] bg-zinc-900/50 border border-red-900/30 p-4 rounded-xl">
-                <div class="text-[10px] text-red-500 font-bold mb-1">LEVEL: DEADLY</div>
-                <h4 class="text-sm font-bold">抹茶紅豆意粉</h4>
-                <p class="text-[10px] text-zinc-500 mt-2">熱忌廉 + 抹茶 + 意粉，挑戰你的胃部極限。</p>
+            <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
+                <div class="text-[9px] text-red-500 font-bold mb-1 tracking-widest">LEVEL: DEADLY</div>
+                <h4 class="text-sm font-bold text-zinc-100">抹茶紅豆意粉 🍵</h4>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">喫茶 Mountain 名物。熱鮮奶油配上抹茶與意粉，勇者限定。</p>
             </div>
-            <div class="min-w-[200px] bg-zinc-900/50 border border-orange-900/30 p-4 rounded-xl">
-                <div class="text-[10px] text-orange-500 font-bold mb-1">LEVEL: WEIRD</div>
-                <h4 class="text-sm font-bold">雪糕壽司卷</h4>
-                <p class="text-[10px] text-zinc-500 mt-2">丸八壽司名物，甜鹹交替的奇妙快感。</p>
+            <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
+                <div class="text-[9px] text-orange-500 font-bold mb-1 tracking-widest">LEVEL: WEIRD</div>
+                <h4 class="text-sm font-bold text-zinc-100">雪糕壽司卷 🍦</h4>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">丸八壽司。將雲呢拿雪糕捲入醋飯，冷熱甜鹹衝擊。</p>
             </div>
-            <div class="min-w-[200px] bg-zinc-900/50 border border-yellow-900/30 p-4 rounded-xl">
-                <div class="text-[10px] text-yellow-500 font-bold mb-1">LEVEL: SALTY</div>
-                <h4 class="text-sm font-bold">守口漬</h4>
-                <p class="text-[10px] text-zinc-500 mt-2">1.8米長的醃蘿蔔，像咬電線一樣的口感。</p>
+            <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
+                <div class="text-[9px] text-yellow-500 font-bold mb-1 tracking-widest">LEVEL: SALTY</div>
+                <h4 class="text-sm font-bold text-zinc-100">守口漬 🥢</h4>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">世界最長醃蘿蔔。長達 1.8 米，酒粕味極濃，挑戰味蕾。</p>
             </div>
         </div>
     </div>
 
     <script>
-       const itineraryData = {
+        const itineraryData = {
             1: [
-                { time: "14:10", name: "中部國際機場 (NGO)", desc: "落機、入境、攞行李", lat: 34.858, lng: 136.805, icon: "🛬" },
-                { time: "16:30", name: "BASE LAYER HOTEL 名古屋錦", desc: "酒店 Check-in", lat: 35.1718, lng: 136.9010, icon: "🏨" },
-                { time: "18:30", name: "Oasis 21 + 電視塔", desc: "影幻彩宇宙船", lat: 35.171, lng: 136.909, icon: "🛸" },
-                { time: "20:00", name: "味仙 (今池本店)", desc: "晚餐：挑戰激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" },
-                { time: "22:00", name: "丸八壽司 (駅前店)", desc: "宵夜：雪糕壽司挑戰 (極奇怪！)", lat: 35.171, lng: 136.887, icon: "🍦" }
+                { time: "14:10", name: "中部國際機場 (NGO)", desc: "攞行李、搭名鐵", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "16:30", name: "酒店 Check-in", desc: "BASE LAYER 名古屋錦", lat: 35.1718, lng: 136.9010, icon: "🏨" },
+                { time: "18:30", name: "Oasis 21", desc: "宇宙船打卡 + 電視塔夜景", lat: 35.171, lng: 136.909, icon: "🛸" },
+                { time: "20:00", name: "味仙 今池本店", desc: "激辣台灣拉麵挑戰", lat: 35.169, lng: 136.937, icon: "🍜" },
+                { time: "22:00", name: "丸八壽司", desc: "怪食：雪糕壽司宵夜", lat: 35.171, lng: 136.887, icon: "🍣" }
             ],
             2: [
-                { time: "10:00", name: "東山動植物園", desc: "必睇：Red Panda (小熊貓)！", lat: 35.157, lng: 136.979, icon: "🐼" },
-                { time: "14:00", name: "Tower Records (名古屋Parco)", desc: "睇CD/音樂周邊", lat: 35.164, lng: 136.908, icon: "💿" },
-                { time: "16:00", name: "名古屋城", desc: "金鯱打卡", lat: 35.184, lng: 136.901, icon: "🏯" }
+                { time: "10:00", name: "東山動植物園", desc: "Red Panda 觀賞任務", lat: 35.157, lng: 136.979, icon: "🐼" },
+                { time: "14:00", name: "Tower Records", desc: "音樂周邊巡禮", lat: 35.164, lng: 136.908, icon: "💿" },
+                { time: "16:00", name: "名古屋城", desc: "金鯱城郭巡禮", lat: 35.184, lng: 136.901, icon: "🏯" }
             ],
             3: [
-                { time: "10:30", name: "大須商店街", desc: "Super Potato / Mandarake", lat: 35.159, lng: 136.903, icon: "🎮" },
-                { time: "14:00", name: "喫茶マウンテン (喫茶山)", desc: "暗黑料理：抹茶紅豆意粉", lat: 35.138, lng: 136.963, icon: "🍵" },
-                { time: "16:30", name: "Workman Plus", desc: "機能服裝 (熱田店)", lat: 35.133, lng: 136.900, icon: "👕" }
+                { time: "10:30", name: "大須商店街", desc: "中古遊戲與動漫天國", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { time: "14:00", name: "喫茶 Mountain", desc: "究極怪食：抹茶紅豆意粉", lat: 35.138, lng: 136.963, icon: "🍵" },
+                { time: "16:30", name: "Workman Plus", desc: "熱田店：機能服飾掃貨", lat: 35.133, lng: 136.900, icon: "👕" }
             ],
             4: [
-                { time: "10:00", name: "則武之森", desc: "網紅打卡書店牆", lat: 35.179, lng: 136.881, icon: "📚" },
-                { time: "12:00", name: "Spaghetti House Chao", desc: "午餐：名古屋名物 Ankake 勾芡意粉", lat: 35.170, lng: 136.883, icon: "🍝" },
-                { time: "13:30", name: "最後手信 / 名古屋站", desc: "買世界最長醃蘿蔔「守口漬」", lat: 35.170, lng: 136.882, icon: "🛍️" },
-                { time: "15:00", name: "前往機場", desc: "搭 μ-Sky 回程", icon: "🛫" }
+                { time: "10:00", name: "則武之森", desc: "網紅書店牆拍照", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "12:00", name: "勾芡意粉 Chao", desc: "最後名古屋名物體驗", lat: 35.170, lng: 136.883, icon: "🍝" },
+                { time: "15:00", name: "機場", desc: "μ-Sky 返程回港", icon: "🛫" }
             ]
         };
-        
+
         let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        
+        // 戰術衛星底圖 (Esri Imagery)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19
+        }).addTo(map);
+
         let markers = [];
 
         function switchDay(day) {
-            // Tab UI 處理 (保持原樣)
             document.querySelectorAll('nav button').forEach(b => {
                 b.classList.remove('tab-active');
                 b.classList.add('text-zinc-500');
@@ -123,14 +140,13 @@
             const dayPoints = [];
 
             itineraryData[day].forEach(item => {
-                // 生成行程列表 HTML (保持原樣)
                 container.innerHTML += `
-                    <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4">
+                    <div class="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4 backdrop-blur-sm">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
-                                <span class="text-[10px] font-bold text-blue-400 uppercase">${item.time}</span>
-                                ${item.lat ? `<a href="https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800 text-decoration-none">NAVIGATE</a>` : ''}
+                                <span class="text-[10px] font-bold text-blue-500 uppercase">${item.time}</span>
+                                ${item.lat ? `<a href="https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}" target="_blank" class="text-[9px] bg-blue-900/30 text-blue-400 px-2 py-1 rounded border border-blue-800/50">NAVIGATE</a>` : ''}
                             </div>
                             <h3 class="font-bold text-sm text-zinc-100">${item.name}</h3>
                             <p class="text-zinc-500 text-[11px] mt-1">${item.desc}</p>
@@ -138,9 +154,8 @@
                     </div>`;
 
                 if (item.lat) {
-                    // 自定義 Emoji Marker
                     const customIcon = L.divIcon({
-                        html: `<div class="marker-pin shadow-lg">${item.icon}</div>`,
+                        html: `<div class="marker-pin">${item.icon}</div>`,
                         className: 'custom-div-icon',
                         iconSize: [40, 40],
                         iconAnchor: [20, 20]
@@ -153,6 +168,7 @@
             });
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
         }
+
         switchDay(1);
     </script>
 </body>
