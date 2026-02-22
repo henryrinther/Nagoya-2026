@@ -15,6 +15,18 @@
         ::-webkit-scrollbar { display: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .marker-pin {
+            width: 38px;
+            height: 38px;
+            background: rgba(24, 24, 27, 0.8);
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            }
     </style>
 </head>
 <body class="bg-black">
@@ -96,6 +108,7 @@
         let markers = [];
 
         function switchDay(day) {
+            // Tab UI 處理 (保持原樣)
             document.querySelectorAll('nav button').forEach(b => {
                 b.classList.remove('tab-active');
                 b.classList.add('text-zinc-500');
@@ -110,20 +123,30 @@
             const dayPoints = [];
 
             itineraryData[day].forEach(item => {
+                // 生成行程列表 HTML (保持原樣)
                 container.innerHTML += `
-                    <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl">
+                    <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
                                 <span class="text-[10px] font-bold text-blue-400 uppercase">${item.time}</span>
-                                ${item.lat ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800">NAVIGATE</a>` : ''}
+                                ${item.lat ? `<a href="https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}" target="_blank" class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-800 text-decoration-none">NAVIGATE</a>` : ''}
                             </div>
                             <h3 class="font-bold text-sm text-zinc-100">${item.name}</h3>
                             <p class="text-zinc-500 text-[11px] mt-1">${item.desc}</p>
                         </div>
                     </div>`;
+
                 if (item.lat) {
-                    const m = L.marker([item.lat, item.lng]).addTo(map);
+                    // 自定義 Emoji Marker
+                    const customIcon = L.divIcon({
+                        html: `<div class="marker-pin shadow-lg">${item.icon}</div>`,
+                        className: 'custom-div-icon',
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20]
+                    });
+
+                    const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
                 }
