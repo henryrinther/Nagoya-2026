@@ -3,53 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Smooth Dark</title>
+    <title>Nagoya Trip 2026 - Dark Matter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #000; color: #eee; overflow-x: hidden; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #000; color: #eee; overflow-x: hidden; }
         
-        /* Stadia Maps 專用設置 - 移除 Filter 保持原生暗色 */
+        /* CartoDB Dark Matter 專用地圖樣式 */
         #map { 
             height: 45vh; 
             width: 100%; 
-            background: #242424;
+            background: #09090b;
             border-bottom: 1px solid #27272a;
+            /* 輕微增加對比度，讓黑更純粹 */
+            filter: contrast(1.1) brightness(0.9);
         }
 
         .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
         
-        /* 自定義發光 Marker */
+        /* 自定義發光 Emoji Marker */
         .marker-pin {
             width: 38px;
             height: 38px;
-            background: rgba(15, 15, 18, 0.9);
+            background: rgba(9, 9, 11, 0.9);
             border: 2px solid #3b82f6;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
         }
 
-        /* 隱藏捲軸 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
         .leaflet-control-attribution { display: none; }
     </style>
 </head>
 <body class="bg-black">
 
-    <header class="bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center shadow-2xl">
+    <header class="bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 sticky top-0 z-[1001] p-4 flex justify-between items-center">
         <div>
             <h1 class="text-xl font-black italic tracking-tighter text-blue-500">NAGOYA 2026</h1>
-            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Base: BASE LAYER 錦</p>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest">Hotel: BASE LAYER 錦</p>
         </div>
         <div class="text-right">
-            <span class="text-[9px] font-bold bg-zinc-800 text-blue-400 px-2 py-1 rounded border border-blue-900/50 tracking-tighter">ALIDADE SMOOTH DARK</span>
+            <span class="text-[9px] font-bold bg-blue-600/20 text-blue-400 px-2 py-1 rounded border border-blue-900/50">M3 MAX POWERED</span>
         </div>
     </header>
 
@@ -73,17 +73,17 @@
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-red-500 font-bold mb-1 tracking-widest">LEVEL: DEADLY</div>
                 <h4 class="text-sm font-bold text-zinc-100">抹茶紅豆意粉 🍵</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">喫茶 Mountain。名古屋最出名的「遇難」聖地。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">喫茶 Mountain。名古屋最狂「甜味意粉」，挑戰勇氣。</p>
             </div>
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-orange-500 font-bold mb-1 tracking-widest">LEVEL: WEIRD</div>
                 <h4 class="text-sm font-bold text-zinc-100">雪糕壽司卷 🍦</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">丸八壽司。衝擊感官的冷熱甜鹹組合。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">丸八壽司。將雲呢拿雪糕捲入醋飯，怪異卻吸引。</p>
             </div>
             <div class="min-w-[220px] bg-zinc-900/40 border border-zinc-800 p-4 rounded-2xl">
                 <div class="text-[9px] text-yellow-500 font-bold mb-1 tracking-widest">LEVEL: SALTY</div>
                 <h4 class="text-sm font-bold text-zinc-100">守口漬 🥢</h4>
-                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">世界最長醃蘿蔔。1.8米酒粕醃製極限。</p>
+                <p class="text-[10px] text-zinc-500 mt-2 leading-relaxed">世界最長醃蘿蔔。1.8米酒粕醃製，鹹甜交織。</p>
             </div>
         </div>
     </div>
@@ -91,36 +91,35 @@
     <script>
         const itineraryData = {
             1: [
-                { time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋門戶", lat: 34.858, lng: 136.805, icon: "🛬" },
+                { time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋之旅起點", lat: 34.858, lng: 136.805, icon: "🛬" },
                 { time: "16:30", name: "酒店 Check-in", desc: "BASE LAYER 名古屋錦", lat: 35.1718, lng: 136.9010, icon: "🏨" },
-                { time: "18:30", name: "Oasis 21", desc: "宇宙船打卡 + 電視塔夜景", lat: 35.171, lng: 136.909, icon: "🛸" },
-                { time: "20:00", name: "味仙 今池本店", desc: "激辣台灣拉麵挑戰", lat: 35.169, lng: 136.937, icon: "🍜" },
-                { time: "22:00", name: "丸八壽司", desc: "怪食挑戰：雪糕壽司卷", lat: 35.171, lng: 136.887, icon: "🍣" }
+                { time: "18:30", name: "Oasis 21", desc: "幻彩宇宙船打卡", lat: 35.171, lng: 136.909, icon: "🛸" },
+                { time: "20:00", name: "味仙 今池本店", desc: "挑戰激辣台灣拉麵", lat: 35.169, lng: 136.937, icon: "🍜" },
+                { time: "22:00", name: "丸八壽司", desc: "夜宵：雪糕壽司卷挑戰", lat: 35.171, lng: 136.887, icon: "🍣" }
             ],
             2: [
-                { time: "10:00", name: "東山動植物園", desc: "尋找小熊貓任務", lat: 35.157, lng: 136.979, icon: "🐼" },
-                { time: "14:00", name: "Tower Records", desc: "Parco 榮區巡禮", lat: 35.164, lng: 136.908, icon: "💿" },
-                { time: "16:00", name: "名古屋城", desc: "金鯱城郭打卡", lat: 35.184, lng: 136.901, icon: "🏯" }
+                { time: "10:00", name: "東山動植物園", desc: "尋找 Red Panda 小熊貓", lat: 35.157, lng: 136.979, icon: "🐼" },
+                { time: "14:00", name: "Tower Records", desc: "名古屋 Parco 音樂巡禮", lat: 35.164, lng: 136.908, icon: "💿" },
+                { time: "16:00", name: "名古屋城", desc: "金鯱地標打卡", lat: 35.184, lng: 136.901, icon: "🏯" }
             ],
             3: [
-                { time: "10:30", name: "大須商店街", desc: "中古遊戲/動漫天國", lat: 35.159, lng: 136.903, icon: "🎮" },
-                { time: "14:00", name: "喫茶 Mountain", desc: "抹茶紅豆意粉任務", lat: 35.138, lng: 136.963, icon: "🍵" },
-                { time: "16:30", name: "Workman Plus", desc: "熱田店：機能服飾採購", lat: 35.133, lng: 136.900, icon: "👕" }
+                { time: "10:30", name: "大須商店街", desc: "中古遊戲與動漫聖地", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { time: "14:00", name: "喫茶 Mountain", desc: "抹茶紅豆意粉終極挑戰", lat: 35.138, lng: 136.963, icon: "🍵" },
+                { time: "16:30", name: "Workman Plus", desc: "熱田店：機能服裝採購", lat: 35.133, lng: 136.900, icon: "👕" }
             ],
             4: [
-                { time: "10:00", name: "則武之森", desc: "蔦屋書店牆拍照", lat: 35.179, lng: 136.881, icon: "📚" },
-                { time: "12:00", name: "勾芡意粉 Chao", desc: "名古屋重口味經典", lat: 35.170, lng: 136.883, icon: "🍝" },
-                { time: "15:00", name: "機場", desc: "μ-Sky 歸途", icon: "🛫" }
+                { time: "10:00", name: "則武之森", desc: "拍出震撼的書店牆", lat: 35.179, lng: 136.881, icon: "📚" },
+                { time: "12:00", name: "勾芡意粉 Chao", desc: "品嚐經典重口味", lat: 35.170, lng: 136.883, icon: "🍝" },
+                { time: "15:00", name: "前往機場", desc: "搭 μ-Sky 結束旅程", icon: "🛫" }
             ]
         };
 
-        // 初始化地圖
         let map = L.map('map', { zoomControl: false }).setView([35.17, 136.90], 12);
         
-        // Stadia Maps - Alidade Smooth Dark
-        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-            maxZoom: 20,
-            attribution: ''
+        // 更換為 CartoDB Dark Matter (免 API Key)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 20
         }).addTo(map);
 
         let markers = [];
@@ -141,7 +140,7 @@
 
             itineraryData[day].forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-zinc-900/60 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4 backdrop-blur-md">
+                    <div class="bg-zinc-900/80 p-4 rounded-2xl border border-zinc-800 flex gap-4 shadow-xl mb-4 backdrop-blur-sm">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
@@ -160,7 +159,6 @@
                         iconSize: [40, 40],
                         iconAnchor: [20, 20]
                     });
-
                     const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
@@ -168,7 +166,6 @@
             });
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
         }
-
         switchDay(1);
     </script>
 </body>
