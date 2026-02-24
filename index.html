@@ -2,99 +2,133 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Che Hong & Wing Iu - 名古屋之旅行程表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nagoya Trip 2026 - Che Hong & Wing Iu Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
-        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
-        h2 { color: #e67e22; border-left: 5px solid #e67e22; padding-left: 10px; margin-top: 30px; }
-        h3 { color: #2980b9; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .tips { background-color: #e1f5fe; border-radius: 8px; padding: 15px; margin-top: 10px; border-left: 5px solid #0288d1; }
-        .warning { background-color: #fff3e0; border-radius: 8px; padding: 15px; margin-top: 10px; border-left: 5px solid #f57c00; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 5px; }
-        .highlight { font-weight: bold; color: #c0392b; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #09090b; color: #eee; overflow-x: hidden; scroll-behavior: smooth; }
+        #map-container { position: relative; height: 35vh; width: 100%; border-bottom: 1px solid #27272a; }
+        #map { height: 100%; width: 100%; background: #242424; }
+        .leaflet-tile-container { filter: none !important; }
+        .marker-pin {
+            width: 42px; height: 42px;
+            background: white; border: 3px solid #90ee90; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); cursor: pointer;
+        }
+        .highlight-item { border-color: #90ee90 !important; background: rgba(144, 238, 144, 0.1) !important; transform: scale(1.02); }
+        .tab-active { border-bottom: 3px solid #90ee90; color: #90ee90; font-weight: bold; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .leaflet-control-attribution { display: none; }
     </style>
 </head>
-<body>
+<body class="bg-[#09090b]">
 
-    <h1>Nagoya Trip 2026</h1>
-
-    <section id="day-3">
-        <h2>Day 3: 2026年2月26日 (星期四)</h2>
-        <h3>今日主題：小熊貓、激辛甘口挑戰與 PSP 尋寶</h3>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 20%;">時間</th>
-                    <th style="width: 40%;">行程內容</th>
-                    <th style="width: 40%;">備註 / 攻略</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>早上</strong></td>
-                    <td><strong>東山動植物園</strong></td>
-                    <td>
-                        <ul>
-                            <li>直奔<strong>北園</strong>探訪小熊貓 (Red Panda)。</li>
-                            <li>推薦喺佢哋最活躍嘅朝早段時間睇。</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>中午</strong></td>
-                    <td><strong>喫茶マウンテン (Mountain)</strong></td>
-                    <td>
-                        <ul>
-                            <li><span class="highlight">「登山」挑戰：</span>奇異果甘口意粉。</li>
-                            <li>同 <strong>Wing Iu</strong> 夾份食，另一份叫鹹食（如小倉皮拉夫）中和。</li>
-                            <li>交通：地鐵「八事日赤」站。</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>下午</strong></td>
-                    <td><strong>大須商店街尋寶</strong></td>
-                    <td>
-                        <ul>
-                            <li>目標：中古 PSP 1000/3000 型。</li>
-                            <li>重點細舖：<strong>MEIKOYA (めいこや)</strong>、<strong>K's House</strong>。</li>
-                            <li>坐名城線由八事日赤直達「上前津」站。</li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>晚上</strong></td>
-                    <td>大須散策 / 自由晚餐</td>
-                    <td>喺大須搵間特色小店休息，消化激甜意粉。</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="tips">
-            <h3>🎮 PSP 選購指南 (1000 vs 3000)</h3>
-            <ul>
-                <li><strong>PSP-1000：</strong>手感厚實紮實，雖然螢幕稍遜，但有經典嘅原始質感。</li>
-                <li><strong>PSP-3000：</strong>螢幕最靚、色彩鮮豔，機身輕薄，玩耐咗手冇咁攰。</li>
-                <li><strong>必查：</strong>檢查電池有無膨脹，試機時對住白色畫面檢查有無黃邊。</li>
-            </ul>
+    <header class="bg-zinc-950 p-5 flex justify-between items-center border-b border-zinc-900 sticky top-0 z-[2000] backdrop-blur-md">
+        <div>
+            <h1 class="text-xl font-light tracking-[0.4em] text-[#90ee90]">N A G O Y A</h1>
+            <p class="text-[8px] text-zinc-500 uppercase tracking-[0.2em] mt-1">2026 March / M3 Max Powered</p>
         </div>
-
-        <div class="warning">
-            <h3>⚠️ 登山小貼士</h3>
-            <p>喫茶マウンテン嘅甘口意粉係「挑戰級」，如果食唔晒（遭難）係好正常嘅。準備定黑咖啡或者濃茶解膩！</p>
+        <div class="flex items-center gap-3 bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800">
+            <div class="text-2xl">🌤️</div>
+            <div class="text-right">
+                <div class="text-[10px] font-bold text-[#90ee90] leading-none">12°C</div>
+                <div class="text-[8px] text-zinc-500 uppercase mt-1">Nagoya / Cloudy</div>
+            </div>
         </div>
-    </section>
+    </header>
 
-    <hr>
-    <footer style="text-align: center; color: #888; margin-top: 50px;">
-        <p>Prepared for Che Hong & Wing Iu | 2026 名古屋旅程</p>
-    </footer>
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
 
+    <nav class="bg-zinc-950 border-b border-zinc-900 flex justify-around sticky top-[82px] z-[2000]">
+        <button onclick="switchDay(1)" id="tab1" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D1</button>
+        <button onclick="switchDay(2)" id="tab2" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="py-4 px-6 text-[10px] tracking-widest tab-active">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="py-4 px-6 text-[10px] tracking-widest text-zinc-600">D4</button>
+    </nav>
+
+    <main id="itinerary" class="p-6 space-y-4 pb-24"></main>
+
+    <script>
+        const hotel = { id: "hotel-base", time: "BASE", name: "BASE LAYER 名古屋錦", desc: "錦2丁目2-6-30", hours: "24h Stay", lat: 35.1718, lng: 136.9010, icon: "🏨" };
+
+        const itineraryData = {
+            1: [
+                { id: "loc-1-1", time: "14:10", name: "中部國際機場 (NGO)", desc: "名古屋之旅起點", hours: "24 Hours", lat: 34.858, lng: 136.805, icon: "🛬" },
+                hotel,
+                { id: "loc-1-3", time: "19:00", name: "馬喰一代 名古屋榮", desc: "晚餐：頂級飛驒牛燒肉", hours: "11:30–23:00", lat: 35.1699, lng: 136.9082, icon: "🐂" }
+            ],
+            2: [
+                hotel,
+                { id: "loc-2-1", time: "10:00", name: "名古屋市科學館", desc: "必睇世界最大天象儀", hours: "09:30–17:00", lat: 35.1643, lng: 136.8998, icon: "🔭" },
+                { id: "loc-2-2", time: "12:30", name: "山本屋總本家", desc: "午餐：味噌煮烏冬名店", hours: "11:00–22:00", lat: 35.1661, lng: 136.9073, icon: "🥘" },
+                { id: "loc-2-3", time: "15:00", name: "Banana Record 榮店", desc: "榮區黑膠連鎖名店", hours: "11:00–20:00", lat: 35.1685, lng: 136.9063, icon: "💿" }
+            ],
+            3: [
+                hotel,
+                { id: "loc-3-1", time: "09:30", name: "東山動植物園", desc: "睇 Red Panda 小熊貓 (北園) & 帥氣猩猩", hours: "09:00–16:30", lat: 35.1594, lng: 136.9808, icon: "🐼" },
+                { id: "loc-3-2", time: "12:30", name: "喫茶マウンテン (Mountain)", desc: "「登山」挑戰：甘口奇異果意粉。與 Wing Iu 夾份食！", hours: "09:00–21:30", lat: 35.1408, lng: 136.9634, icon: "🥝" },
+                { id: "loc-3-3", time: "15:00", name: "大須商店街 (PSP 尋寶)", desc: "MEIKOYA、K's House 等細舖搵 PSP 1000/3000", hours: "10:00–20:00", lat: 35.159, lng: 136.903, icon: "🎮" },
+                { id: "loc-3-4", time: "18:30", name: "大須散策", desc: "買 Memory Stick 轉接卡，消化奇異果意粉", hours: "24 Hours", lat: 35.1585, lng: 136.9015, icon: "👟" }
+            ],
+            4: [
+                hotel,
+                { id: "loc-4-1", time: "11:00", name: "cafe MARU", desc: "那古野圓頓寺商店街網紅店", hours: "11:00–18:00", lat: 35.1765, lng: 136.8912, icon: "☕" },
+                { id: "loc-4-2", time: "13:00", name: "近江燒肉すだく", desc: "午餐：近江牛燒肉丼", hours: "12:00–23:00", lat: 35.1738, lng: 136.8915, icon: "🍚" },
+                { id: "loc-4-3", time: "15:00", name: "機場回程", desc: "前往機場搭機", hours: "N/A", icon: "🛫" }
+            ]
+        };
+
+        let map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([35.17, 136.90], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        let markers = [];
+
+        function switchDay(day) {
+            document.querySelectorAll('nav button').forEach(b => { b.classList.remove('tab-active'); b.classList.add('text-zinc-600'); });
+            document.getElementById('tab' + day).classList.add('tab-active');
+            document.getElementById('tab' + day).classList.remove('text-zinc-600');
+            const container = document.getElementById('itinerary');
+            container.innerHTML = ''; markers.forEach(m => map.removeLayer(m)); markers = [];
+            const dayPoints = [];
+            itineraryData[day].forEach(item => {
+                container.innerHTML += `
+                    <div id="${item.id}" class="item-card transition-all duration-300 flex gap-6 border border-zinc-900 bg-zinc-950/50 p-5 rounded-2xl relative active:scale-95">
+                        <div class="text-3xl">${item.icon}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold text-sm text-zinc-100 uppercase tracking-wider">${item.name}</h3>
+                                <span class="text-[9px] font-mono text-[#90ee90] font-bold">${item.time}</span>
+                            </div>
+                            <p class="text-zinc-500 text-[10px] mt-1 font-light leading-relaxed">${item.desc}</p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="text-[8px] px-2 py-0.5 rounded border border-zinc-800 text-zinc-500 font-mono">🕒 HOURS: ${item.hours}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                if (item.lat) {
+                    const customIcon = L.divIcon({ html: `<div class="marker-pin" onclick="scrollToItem('${item.id}')">${item.icon}</div>`, className: 'custom-div-icon', iconSize: [42, 42], iconAnchor: [21, 21] });
+                    const m = L.marker([item.lat, item.lng], { icon: customIcon }).addTo(map); markers.push(m); dayPoints.push([item.lat, item.lng]);
+                }
+            });
+            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [60, 60] });
+        }
+
+        function scrollToItem(id) {
+            document.querySelectorAll('.item-card').forEach(card => card.classList.remove('highlight-item'));
+            const target = document.getElementById(id);
+            if (target) {
+                const y = target.getBoundingClientRect().top + window.pageYOffset - 180;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                target.classList.add('highlight-item');
+                setTimeout(() => target.classList.remove('highlight-item'), 3000);
+            }
+        }
+        // 預設開啟 Day 3，方便你檢查
+        switchDay(3);
+    </script>
 </body>
 </html>
