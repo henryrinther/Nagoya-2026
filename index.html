@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya Trip 2026 - Final Souvenir Edition</title>
+    <title>Nagoya Trip 2026 - Route Master Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -22,6 +22,17 @@
         .tab-active { border-bottom: 3px solid #90ee90; color: #90ee90; font-weight: bold; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .leaflet-control-attribution { display: none; }
+        /* 新增按鈕樣式 */
+        .gmap-btn {
+            border: 1px solid #90ee90;
+            color: #90ee90;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        .gmap-btn:active { background: #90ee90; color: #000; }
     </style>
 </head>
 <body class="bg-[#09090b]">
@@ -35,7 +46,7 @@
             <div class="text-2xl">🌤️</div>
             <div class="text-right">
                 <div class="text-[10px] font-bold text-[#90ee90] leading-none">12°C</div>
-                <div class="text-[8px] text-zinc-500 uppercase mt-1">Nagoya / Last Day</div>
+                <div class="text-[8px] text-zinc-500 uppercase mt-1">Nagoya / Last Days</div>
             </div>
         </div>
     </header>
@@ -70,7 +81,7 @@
             ],
             3: [
                 hotel,
-                { id: "loc-3-1", time: "09:30", name: "東山動植物園", desc: "探訪小熊貓 (北園)；朝早活動力最強", hours: "09:00–16:30", lat: 35.1594, lng: 136.9808, icon: "🐼" },
+                { id: "loc-3-1", time: "09:30", name: "東山動植物園", desc: "睇小熊貓 (北園)；朝早活動力最強", hours: "09:00–16:30", lat: 35.1594, lng: 136.9808, icon: "🐼" },
                 { id: "loc-3-2", time: "12:30", name: "喫茶マウンテン", desc: "「登山」挑戰：奇異果甘口意粉 (與 Wing Iu 夾份食)", hours: "09:00–21:30", lat: 35.1408, lng: 136.9634, icon: "🥝" },
                 { id: "loc-3-3", time: "15:00", name: "大須商店街", desc: "中古 PSP 尋寶 (細舖攻略：MEIKOYA、K's House)", hours: "10:00–20:00", lat: 35.159, lng: 136.903, icon: "🎮" }
             ],
@@ -78,7 +89,7 @@
                 { id: "loc-4-0", time: "09:00", name: "最後手信：精品咖啡", desc: "酒店附近買 Shrub / Still Thinking 掛耳包 (HKD50)", hours: "09:00–", lat: 35.1725, lng: 136.9015, icon: "☕" },
                 { id: "loc-4-1", time: "10:00", name: "榮區 LOFT / 松坂屋", desc: "買桃味浴鹽、桃乾、質感小物提升生活品味", hours: "10:00–", lat: 35.1665, lng: 136.908, icon: "🍑" },
                 { id: "loc-4-2", time: "12:00", name: "cafe MARU / 近江燒肉すだく", desc: "最後名古屋午餐，準備返程", hours: "11:00–23:00", lat: 35.1738, lng: 136.8915, icon: "🍚" },
-                { id: "loc-4-3", time: "15:00", name: "機場回程", desc: "帶著 PSP 同手信前往機場", hours: "N/A", icon: "🛫" }
+                { id: "loc-4-3", time: "15:00", name: "機場回程", desc: "帶著 PSP 同手信前往機場", hours: "N/A", lat: 34.858, lng: 136.805, icon: "🛫" }
             ]
         };
 
@@ -103,8 +114,9 @@
                                 <span class="text-[9px] font-mono text-[#90ee90] font-bold">${item.time}</span>
                             </div>
                             <p class="text-zinc-500 text-[10px] mt-1 font-light leading-relaxed">${item.desc}</p>
-                            <div class="mt-3 flex items-center gap-2">
-                                <span class="text-[8px] px-2 py-0.5 rounded border border-zinc-800 text-zinc-500 font-mono">🕒 HOURS: ${item.hours}</span>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-[8px] px-2 py-0.5 rounded border border-zinc-800 text-zinc-500 font-mono uppercase">🕒 HOURS: ${item.hours}</span>
+                                <button onclick="openInGoogleMaps(${item.lat}, ${item.lng}, '${item.name}')" class="gmap-btn">GOOGLE MAP</button>
                             </div>
                         </div>
                     </div>`;
@@ -114,6 +126,12 @@
                 }
             });
             if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [60, 60] });
+        }
+
+        function openInGoogleMaps(lat, lng, name) {
+            if(!lat || !lng) return;
+            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            window.open(url, '_blank');
         }
 
         function scrollToItem(id) {
@@ -126,7 +144,7 @@
                 setTimeout(() => target.classList.remove('highlight-item'), 3000);
             }
         }
-        switchDay(4); // 預設顯示 Day 4
+        switchDay(4);
     </script>
 </body>
 </html>
