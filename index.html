@@ -3,45 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nagoya '26 - Poster Edition (Fixed)</title>
+    <title>Nagoya '26 - Cyan Edition V3.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body { font-family: -apple-system, system-ui, sans-serif; background-color: #050505; color: #eee; overflow-x: hidden; scroll-behavior: smooth; }
-        #map-container { position: relative; height: 35vh; width: 100%; border-bottom: 1px solid #1a1a1a; }
-        #map { height: 100%; width: 100%; background: #111; }
         
-        /* 令地圖變深色嘅 CSS 濾鏡 */
-        .leaflet-tile-container { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
-        .leaflet-container { background: #050505 !important; }
+        /* Cyan Edition 地圖風格：濾鏡處理模擬深色藍圖 */
+        #map-container { position: relative; height: 40vh; width: 100%; border-bottom: 1px solid #1a1a1a; }
+        #map { height: 100%; width: 100%; background: #010409; }
+        .leaflet-tile-container { 
+            filter: invert(100%) hue-rotate(170deg) brightness(40%) contrast(120%) saturate(150%); 
+        }
+        .leaflet-container { background: #010409 !important; }
 
-        .tab-btn { position: relative; transition: all 0.3s; color: #555; }
+        /* 導覽列與標題樣式 */
+        .tab-btn { position: relative; transition: all 0.3s; color: #333; font-weight: 300; }
         .tab-active { color: #90ee90 !important; font-weight: 900; }
-        .tab-active::after { content: ''; position: absolute; bottom: 0; left: 25%; width: 50%; height: 2px; background: #90ee90; box-shadow: 0 0 10px #90ee90; }
+        .tab-active::after { content: ''; position: absolute; bottom: 0; left: 35%; width: 30%; height: 2px; background: #90ee90; box-shadow: 0 0 15px #90ee90; }
 
-        .item-card { border: 1px solid #1a1a1a; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); border-l-4 border-l-[#90ee90]; }
-        .marker-pin {
-            width: 12px; height: 12px;
-            background: #90ee90; border: 2px solid white; border-radius: 50%;
-            box-shadow: 0 0 10px #90ee90;
+        /* 卡片設計：深色半透明與左側光線 */
+        .item-card { 
+            border: 1px solid #1a1a1a; 
+            background: rgba(15, 15, 15, 0.6); 
+            backdrop-filter: blur(8px); 
+            border-left: 3px solid #90ee90; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
+        /* 地圖標記樣式：青色發光圓點 (跟足圖 2) */
+        .marker-glow {
+            width: 14px; height: 14px;
+            background: #90ee90; border: 2px solid #fff; border-radius: 50%;
+            box-shadow: 0 0 20px #90ee90, 0 0 40px rgba(144, 238, 144, 0.4);
+        }
+
+        /* 功能按鈕 */
         .gmap-btn {
-            border: 1px solid #90ee90; color: #90ee90; padding: 4px 12px; border-radius: 4px;
-            font-size: 8px; font-weight: bold; letter-spacing: 2px;
+            border: 1px solid #90ee90; color: #90ee90; padding: 5px 14px; border-radius: 4px;
+            font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; transition: all 0.2s;
         }
+        .gmap-btn:active { background: #90ee90; color: #000; }
     </style>
 </head>
 <body class="bg-[#050505]">
 
-    <header class="bg-black/90 p-6 flex justify-between items-end border-b border-zinc-900 sticky top-0 z-[2000] backdrop-blur-xl">
+    <header class="bg-black/95 p-6 flex justify-between items-end border-b border-zinc-900 sticky top-0 z-[2000] backdrop-blur-md">
         <div>
-            <h1 class="text-2xl font-black tracking-[0.5em] text-[#90ee90] italic">NAGOYA '26</h1>
-            <p class="text-[9px] text-zinc-600 uppercase tracking-[0.3em] mt-1">Fragment Edition / Che Hong & Wing Iu</p>
+            <h1 class="text-2xl font-black tracking-[0.4em] text-[#90ee90] italic">N A G O Y A</h1>
+            <p class="text-[8px] text-zinc-600 uppercase tracking-[0.3em] mt-1">Cyan Edition V3.0 / M3 Max Powered</p>
         </div>
         <div class="text-right">
-            <div class="text-xs font-bold text-[#90ee90]">POSTER_MODE.V2</div>
+            <span class="text-[10px] bg-zinc-900 border border-zinc-800 px-2 py-1 rounded text-zinc-500 font-mono">D3-D4 FINAL</span>
         </div>
     </header>
 
@@ -49,11 +64,11 @@
         <div id="map"></div>
     </div>
 
-    <nav class="bg-black border-b border-zinc-900 flex justify-around sticky top-[88px] z-[2000]">
-        <button onclick="switchDay(1)" id="tab1" class="tab-btn py-5 px-6 text-[10px] tracking-widest uppercase">D1</button>
-        <button onclick="switchDay(2)" id="tab2" class="tab-btn py-5 px-6 text-[10px] tracking-widest uppercase">D2</button>
-        <button onclick="switchDay(3)" id="tab3" class="tab-btn py-5 px-6 text-[10px] tracking-widest uppercase">D3</button>
-        <button onclick="switchDay(4)" id="tab4" class="tab-btn py-5 px-6 text-[10px] tracking-widest uppercase tab-active">D4</button>
+    <nav class="bg-black/90 border-b border-zinc-900 flex justify-around sticky top-[88px] z-[2000]">
+        <button onclick="switchDay(1)" id="tab1" class="tab-btn py-5 px-6 text-[10px] tracking-[0.2em] uppercase">D1</button>
+        <button onclick="switchDay(2)" id="tab2" class="tab-btn py-5 px-6 text-[10px] tracking-[0.2em] uppercase">D2</button>
+        <button onclick="switchDay(3)" id="tab3" class="tab-btn py-5 px-6 text-[10px] tracking-[0.2em] uppercase">D3</button>
+        <button onclick="switchDay(4)" id="tab4" class="tab-btn py-5 px-6 text-[10px] tracking-[0.2em] uppercase">D4</button>
     </nav>
 
     <main id="itinerary" class="p-6 space-y-4 pb-24 max-w-2xl mx-auto"></main>
@@ -75,19 +90,19 @@
             ],
             3: [
                 hotel,
-                { id: "loc-3-1", time: "09:30", name: "東山動植物園", desc: "探訪小熊貓 (北園)；小熊貓朝早最活躍！", hours: "09:00–16:30", lat: 35.1594, lng: 136.9808, icon: "🐼" },
-                { id: "loc-3-2", time: "12:30", name: "喫茶マウンテン", desc: "挑戰奇異果意粉！食得晒叫「登頂」。", hours: "09:00–21:30", lat: 35.1408, lng: 136.9634, icon: "🥝" },
-                { id: "loc-3-3", time: "15:00", name: "大須商店街", desc: "中古 PSP 尋寶 (MEIKOYA 搵機 / 買記憶卡轉接)", hours: "10:00–20:00", lat: 35.159, lng: 136.903, icon: "🎮" }
+                { id: "loc-3-1", time: "09:30", name: "東山動植物園", desc: "重點：探訪小熊貓 (北園)", hours: "09:00–16:30", lat: 35.1594, lng: 136.9808, icon: "🐼" },
+                { id: "loc-3-2", time: "12:30", name: "喫茶マウンテン", desc: "挑戰奇異果甘口意粉；與 Wing Iu 夾份食", hours: "09:00–21:30", lat: 35.1408, lng: 136.9634, icon: "🥝" },
+                { id: "loc-3-3", time: "15:00", name: "大須商店街", desc: "中古 PSP 尋寶 (MEIKOYA / K's House)", hours: "10:00–20:00", lat: 35.159, lng: 136.903, icon: "🎮" }
             ],
             4: [
-                { id: "loc-4-0", time: "09:00", name: "最後手信：精品咖啡", desc: "酒店附近 Shrub / Still Thinking 買掛耳包 (HKD50)", hours: "09:00–", lat: 35.1725, lng: 136.9015, icon: "☕" },
-                { id: "loc-4-1", time: "10:00", name: "榮區 LOFT / 松坂屋", desc: "買桃味浴鹽、桃乾、提升生活品味小物", hours: "10:00–", lat: 35.1665, lng: 136.908, icon: "🍑" },
-                { id: "loc-4-2", time: "12:00", name: "那古野午餐 / 準備返程", desc: "最後名古屋美食，帶著 PSP 同桃產品回港", hours: "11:00–", lat: 35.1738, lng: 136.8915, icon: "🍚" },
+                { id: "loc-4-0", time: "09:00", name: "最後衝刺：精品咖啡", desc: "Shrub / Still Thinking 買掛耳包 (預算 HKD50)", hours: "09:00–", lat: 35.1725, lng: 136.9015, icon: "☕" },
+                { id: "loc-4-1", time: "10:00", name: "榮區 LOFT / 松坂屋", desc: "買桃味浴鹽、桃乾等品味小物", hours: "10:00–", lat: 35.1665, lng: 136.908, icon: "🍑" },
+                { id: "loc-4-2", time: "12:00", name: "最後午餐：那古野區", desc: "帶著戰利品準備前往機場", hours: "11:00–", lat: 35.1738, lng: 136.8915, icon: "🍚" },
                 { id: "loc-4-3", time: "15:00", name: "機場回程", desc: "前往中部國際機場 (NGO)", hours: "N/A", lat: 34.858, lng: 136.805, icon: "🛫" }
             ]
         };
 
-        let map = L.map('map', { zoomControl: false, scrollWheelZoom: false }).setView([35.17, 136.90], 13);
+        let map = L.map('map', { zoomControl: false, scrollWheelZoom: false, attributionControl: false }).setView([35.17, 136.90], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
         let markers = [];
 
@@ -107,28 +122,29 @@
                         <div class="text-3xl">${item.icon}</div>
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
-                                <h3 class="font-black text-xs text-white uppercase tracking-widest">${item.name}</h3>
+                                <h3 class="font-black text-[11px] text-white uppercase tracking-widest">${item.name}</h3>
                                 <span class="text-[9px] font-mono text-[#90ee90]">${item.time}</span>
                             </div>
                             <p class="text-zinc-500 text-[10px] mt-2 font-light leading-relaxed uppercase">${item.desc}</p>
                             <div class="mt-4 flex justify-between items-center">
-                                <span class="text-[7px] text-zinc-700 font-mono italic">DATA_POINT: ${item.hours}</span>
-                                <button onclick="window.open('https://maps.google.com/maps/contrib/107547027975880449837{item.lat},${item.lng}')" class="gmap-btn">NAV_ROUTE</button>
+                                <span class="text-[7px] text-zinc-700 font-mono italic tracking-tighter">REF_POINT: ${item.hours}</span>
+                                <button onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${item.lat},${item.lng}')" class="gmap-btn">NAV_ROUTE</button>
                             </div>
                         </div>
                     </div>`;
 
                 if (item.lat) {
-                    const icon = L.divIcon({ html: `<div class="marker-pin"></div>`, className: 'custom-div-icon', iconSize: [12, 12], iconAnchor: [6, 6] });
+                    const icon = L.divIcon({ html: `<div class="marker-glow"></div>`, className: 'custom-div-icon', iconSize: [14, 14], iconAnchor: [7, 7] });
                     const m = L.marker([item.lat, item.lng], { icon: icon }).addTo(map);
                     markers.push(m);
                     dayPoints.push([item.lat, item.lng]);
                 }
             });
-            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [50, 50] });
+            if(dayPoints.length > 0) map.fitBounds(dayPoints, { padding: [60, 60] });
         }
 
-        switchDay(4);
+        // 預設顯示今日 (Day 3)
+        switchDay(3);
     </script>
 </body>
 </html>
